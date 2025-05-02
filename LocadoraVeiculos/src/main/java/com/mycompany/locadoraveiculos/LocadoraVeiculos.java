@@ -10,7 +10,7 @@ import model.*;
 import java.util.*;
 import java.time.LocalDate;
 
-public class App {
+public class LocadoraVeiculos {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
