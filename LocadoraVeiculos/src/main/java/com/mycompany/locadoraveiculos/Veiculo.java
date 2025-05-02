@@ -1,7 +1,6 @@
 package com.mycompany.locadoraveiculos;
 
-public class Veiculo {
-
+public abstract class Veiculo {
     private int id;
     private String modelo;
     private String placa;
@@ -16,44 +15,49 @@ public class Veiculo {
         this.precoDiario = precoDiario;
     }
 
+    // Método abstrato que será implementado pelas classes filhas
+    public abstract double calcularSeguro();
+
+    // Getters e Setters
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getModelo() {
         return modelo;
     }
 
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
-    }
-
     public String getPlaca() {
         return placa;
-    }
-
-    public void setPlaca(String placa) {
-        this.placa = placa;
     }
 
     public int getAno() {
         return ano;
     }
 
-    public void setAno(int ano) {
-        this.ano = ano;
-    }
-
     public double getPrecoDiario() {
         return precoDiario;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public void setPlaca(String placa) {
+        this.placa = placa;
+    }
+
+    public void setAno(int ano) {
+        this.ano = ano;
     }
 
     public void setPrecoDiario(double precoDiario) {
         this.precoDiario = precoDiario;
     }
 
+    
 }
