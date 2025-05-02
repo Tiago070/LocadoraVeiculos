@@ -55,12 +55,7 @@ public class Carro extends Veiculo {
         this.cambio = cambio;
     }
 
-    @Override
-    public String toString() {
-        return super.toString() + "\nTipo: Carro" + "\nNúmero de Portas: " + numPortas
-                + "\nCombustível: " + tipoCombustivel + "\nAr Condicionado: "
-                + (arCondicionado ? "Sim" : "Não") + "\nCâmbio: " + cambio;
-    }
+    
 }
 
 
