@@ -6,7 +6,6 @@ package com.mycompany.locadoraveiculos;
  * @author tiago
  */
 
-import model.*;
 import java.util.*;
 import java.time.LocalDate;
 
