@@ -187,5 +187,72 @@ public class Carro extends Veiculo {
             System.out.println("Erro na conexão com o banco: " + e.getMessage());
         }
     }
+    public static void apagarCarro(int idVeiculo) {
+        // Primeiro deleta da tabela carros (filha)
+        String queryCarro = "DELETE FROM carros WHERE id_veiculo = ?";
+        // Depois deleta da tabela veiculos (pai)
+        String queryVeiculo = "DELETE FROM veiculos WHERE id = ? AND tipo = 'CARRO'";
+
+        try (Connection connection = Conexao.getConnection()) {
+            // Inicia transação
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement stmtCarro = connection.prepareStatement(queryCarro);
+                 PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo)) {
+                
+                // Deleta da tabela carros
+                stmtCarro.setInt(1, idVeiculo);
+                int rowsCarro = stmtCarro.executeUpdate();
+
+                // Deleta da tabela veiculos
+                stmtVeiculo.setInt(1, idVeiculo);
+                int rowsVeiculo = stmtVeiculo.executeUpdate();
+
+                if (rowsCarro > 0 && rowsVeiculo > 0) {
+                    connection.commit();
+                    System.out.println("Carro apagado com sucesso.");
+                } else {
+                    connection.rollback();
+                    System.out.println("Carro não encontrado.");
+                }
+                
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Erro ao apagar carro: " + e.getMessage());
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+        }
+    }
+    public static Carro buscarCarroPorId(int idVeiculo) {
+    String query = "SELECT v.id, v.modelo, v.placa, v.ano_fabricacao, v.valor_diaria, " +
+                 "c.numero_portas, c.tipo_combustivel, c.ar_condicionado, c.cambio " +
+                 "FROM veiculos v JOIN carros c ON v.id = c.id_veiculo " +
+                 "WHERE v.id = ? AND v.tipo = 'CARRO'";
+
+    try (Connection connection = Conexao.getConnection();
+         PreparedStatement stmt = connection.prepareStatement(query)) {
+        
+        stmt.setInt(1, idVeiculo);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return new Carro(
+                rs.getInt("id"),
+                rs.getString("modelo"),
+                rs.getString("placa"),
+                rs.getInt("ano_fabricacao"),
+                rs.getDouble("valor_diaria"),
+                rs.getInt("numero_portas"),
+                rs.getString("tipo_combustivel"),
+                rs.getBoolean("ar_condicionado"),
+                rs.getString("cambio")
+            );
+        }
+    } catch (SQLException e) {
+        System.out.println("Erro ao buscar carro: " + e.getMessage());
+    }
+    return null;
+}
 
 }

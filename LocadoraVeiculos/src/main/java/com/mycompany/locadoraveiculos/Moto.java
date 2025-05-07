@@ -189,5 +189,72 @@ public class Moto extends Veiculo {
             System.out.println("Erro na conexão com o banco: " + e.getMessage());
         }
     }
+    public static void apagarMoto(int idVeiculo) {
+        // Primeiro deleta da tabela motos (filha)
+        String queryMoto = "DELETE FROM motos WHERE id_veiculo = ?";
+        // Depois deleta da tabela veiculos (pai)
+        String queryVeiculo = "DELETE FROM veiculos WHERE id = ? AND tipo = 'MOTO'";
+
+        try (Connection connection = Conexao.getConnection()) {
+            // Inicia transação
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement stmtMoto = connection.prepareStatement(queryMoto);
+                 PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo)) {
+                
+                // Deleta da tabela motos
+                stmtMoto.setInt(1, idVeiculo);
+                int rowsMoto = stmtMoto.executeUpdate();
+
+                // Deleta da tabela veiculos
+                stmtVeiculo.setInt(1, idVeiculo);
+                int rowsVeiculo = stmtVeiculo.executeUpdate();
+
+                if (rowsMoto > 0 && rowsVeiculo > 0) {
+                    connection.commit();
+                    System.out.println("Moto apagada com sucesso.");
+                } else {
+                    connection.rollback();
+                    System.out.println("Moto não encontrada.");
+                }
+                
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Erro ao apagar moto: " + e.getMessage());
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+        }
+    }
+    public static Moto buscarMotoPorId(int idVeiculo) {
+    String query = "SELECT v.id, v.modelo, v.placa, v.ano_fabricacao, v.valor_diaria, " +
+                 "m.cilindradas, m.tipo_moto, m.partida_eletrica, m.tipo_freio " +
+                 "FROM veiculos v JOIN motos m ON v.id = m.id_veiculo " +
+                 "WHERE v.id = ? AND v.tipo = 'MOTO'";
+
+    try (Connection connection = Conexao.getConnection();
+         PreparedStatement stmt = connection.prepareStatement(query)) {
+        
+        stmt.setInt(1, idVeiculo);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return new Moto(
+                rs.getInt("id"),
+                rs.getString("modelo"),
+                rs.getString("placa"),
+                rs.getInt("ano_fabricacao"),
+                rs.getDouble("valor_diaria"),
+                rs.getInt("cilindradas"),
+                rs.getString("tipo_moto"),
+                rs.getBoolean("partida_eletrica"),
+                rs.getString("tipo_freio")
+            );
+        }
+    } catch (SQLException e) {
+        System.out.println("Erro ao buscar moto: " + e.getMessage());
+    }
+    return null;
+}
 }
 
