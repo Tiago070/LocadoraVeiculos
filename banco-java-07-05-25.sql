@@ -18,6 +18,32 @@ USE `concessionaria`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `aluguel`
+--
+
+DROP TABLE IF EXISTS `aluguel`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `aluguel` (
+  `idAluguel` int NOT NULL,
+  `Cliente` varchar(255) DEFAULT NULL,
+  `Veiculo` varchar(255) DEFAULT NULL,
+  `DataInicio` date DEFAULT NULL,
+  `DataFim` date DEFAULT NULL,
+  PRIMARY KEY (`idAluguel`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `aluguel`
+--
+
+LOCK TABLES `aluguel` WRITE;
+/*!40000 ALTER TABLE `aluguel` DISABLE KEYS */;
+/*!40000 ALTER TABLE `aluguel` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `carro`
 --
 
@@ -26,10 +52,10 @@ DROP TABLE IF EXISTS `carro`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `carro` (
   `idcarro` int NOT NULL,
-  `placa` int NOT NULL,
-  `cor` varchar(45) NOT NULL,
-  `marca` varchar(45) NOT NULL,
-  `potência` varchar(45) NOT NULL,
+  `numPortas` int DEFAULT NULL,
+  `tipoCombustivel` varchar(20) DEFAULT NULL,
+  `arCondicionado` tinyint(1) DEFAULT NULL,
+  `cambio` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`idcarro`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -44,76 +70,29 @@ LOCK TABLES `carro` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `locador-`
+-- Table structure for table `cliente`
 --
 
-DROP TABLE IF EXISTS `locador-`;
+DROP TABLE IF EXISTS `cliente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `locador-` (
-  `idLocador-` int NOT NULL,
-  `Nome` varchar(255) NOT NULL,
-  `Contato` int NOT NULL,
-  `Conta_Executiva` varchar(45) NOT NULL,
-  `Aluguel` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`idLocador-`)
+CREATE TABLE `cliente` (
+  `idCliente` int NOT NULL,
+  `Nome` varchar(45) NOT NULL,
+  `Cpf` varchar(45) NOT NULL,
+  `Telefone` varchar(45) DEFAULT NULL,
+  `Email` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`idCliente`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `locador-`
+-- Dumping data for table `cliente`
 --
 
-LOCK TABLES `locador-` WRITE;
-/*!40000 ALTER TABLE `locador-` DISABLE KEYS */;
-/*!40000 ALTER TABLE `locador-` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `locadora`
---
-
-DROP TABLE IF EXISTS `locadora`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `locadora` (
-  `idLocadora` int NOT NULL,
-  PRIMARY KEY (`idLocadora`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `locadora`
---
-
-LOCK TABLES `locadora` WRITE;
-/*!40000 ALTER TABLE `locadora` DISABLE KEYS */;
-/*!40000 ALTER TABLE `locadora` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `locatario`
---
-
-DROP TABLE IF EXISTS `locatario`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `locatario` (
-  `idlocatario` int NOT NULL,
-  `Nome` varchar(255) NOT NULL,
-  `Contato` double NOT NULL,
-  `Pedidos` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`idlocatario`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `locatario`
---
-
-LOCK TABLES `locatario` WRITE;
-/*!40000 ALTER TABLE `locatario` DISABLE KEYS */;
-/*!40000 ALTER TABLE `locatario` ENABLE KEYS */;
+LOCK TABLES `cliente` WRITE;
+/*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -125,10 +104,10 @@ DROP TABLE IF EXISTS `moto`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `moto` (
   `idmoto` int NOT NULL,
-  `Placa` varchar(45) NOT NULL,
-  `Cor` varchar(45) NOT NULL,
-  `Marca` varchar(125) NOT NULL,
-  `Potencia` varchar(45) NOT NULL,
+  `cilindradas` tinyint DEFAULT NULL,
+  `tipoFreio` varchar(60) DEFAULT NULL,
+  `tipoMoto` varchar(60) DEFAULT NULL,
+  `partidaEletrica` tinyint DEFAULT NULL,
   PRIMARY KEY (`idmoto`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -143,38 +122,55 @@ LOCK TABLES `moto` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `oficina`
+-- Table structure for table `pagamentos`
 --
 
-DROP TABLE IF EXISTS `oficina`;
+DROP TABLE IF EXISTS `pagamentos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `oficina` (
-  `idOficina` int NOT NULL,
-  `Conserto` tinyint NOT NULL,
-  `Avaliacao` tinyint NOT NULL,
-  `Revisao` tinyint NOT NULL,
-  `Pecas` varchar(45) NOT NULL,
-  PRIMARY KEY (`idOficina`)
+CREATE TABLE `pagamentos` (
+  `idPagamentos` int NOT NULL,
+  `aluguel` varchar(45) DEFAULT NULL,
+  `formaPagamento` varchar(45) DEFAULT NULL,
+  `valor` double DEFAULT NULL,
+  PRIMARY KEY (`idPagamentos`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `oficina`
+-- Dumping data for table `pagamentos`
 --
 
-LOCK TABLES `oficina` WRITE;
-/*!40000 ALTER TABLE `oficina` DISABLE KEYS */;
-/*!40000 ALTER TABLE `oficina` ENABLE KEYS */;
+LOCK TABLES `pagamentos` WRITE;
+/*!40000 ALTER TABLE `pagamentos` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pagamentos` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Dumping events for database 'concessionaria'
+-- Table structure for table `veiculo`
 --
 
+DROP TABLE IF EXISTS `veiculo`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `veiculo` (
+  `idVeiculo` int NOT NULL,
+  `modelo` varchar(45) DEFAULT NULL,
+  `placa` int DEFAULT NULL,
+  `ano` date DEFAULT NULL,
+  `preçoDiario` double DEFAULT NULL,
+  PRIMARY KEY (`idVeiculo`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
 --
--- Dumping routines for database 'concessionaria'
+-- Dumping data for table `veiculo`
 --
+
+LOCK TABLES `veiculo` WRITE;
+/*!40000 ALTER TABLE `veiculo` DISABLE KEYS */;
+/*!40000 ALTER TABLE `veiculo` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -185,4 +181,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-05 21:03:01
+-- Dump completed on 2025-05-07 14:03:20
