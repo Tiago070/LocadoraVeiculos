@@ -1,5 +1,7 @@
 package com.mycompany.locadoraveiculos;
 
+import java.sql.*;
+
 public class Carro extends Veiculo {
 
     private int numPortas;
@@ -53,6 +55,53 @@ public class Carro extends Veiculo {
 
     public void setCambio(String cambio) {
         this.cambio = cambio;
+    }
+    
+    public static void cadastrarCarro(String placa, String marca, String modelo, int anoFabricacao,
+                                    double valorDiaria, String cor, int quilometragem,
+                                    int numeroPortas, String tipoCombustivel) {
+        // Primeiro cadastra o veículo na tabela pai
+        String queryVeiculo = "INSERT INTO veiculos (placa, marca, modelo, ano_fabricacao, " +
+                             "valor_diaria, cor, quilometragem, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, 'CARRO')";
+        
+        // Depois cadastra os dados específicos do carro
+        String queryCarro = "INSERT INTO carros (id_veiculo, numero_portas, tipo_combustivel) " +
+                          "VALUES (LAST_INSERT_ID(), ?, ?)";
+
+        try (Connection connection = Conexao.getConnection()) {
+            // Inicia transação
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo);
+                 PreparedStatement stmtCarro = connection.prepareStatement(queryCarro)) {
+                
+                // Cadastra o veículo
+                stmtVeiculo.setString(1, placa);
+                stmtVeiculo.setString(2, marca);
+                stmtVeiculo.setString(3, modelo);
+                stmtVeiculo.setInt(4, anoFabricacao);
+                stmtVeiculo.setDouble(5, valorDiaria);
+                stmtVeiculo.setString(6, cor);
+                stmtVeiculo.setInt(7, quilometragem);
+                stmtVeiculo.executeUpdate();
+
+                // Cadastra os dados específicos do carro
+                stmtCarro.setInt(1, numeroPortas);
+                stmtCarro.setString(2, tipoCombustivel);
+                stmtCarro.executeUpdate();
+
+                // Confirma transação
+                connection.commit();
+                System.out.println("Carro cadastrado com sucesso.");
+                
+            } catch (SQLException e) {
+                // Em caso de erro, faz rollback
+                connection.rollback();
+                System.out.println("Erro ao cadastrar carro: " + e.getMessage());
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+        }
     }
 
     

@@ -1,7 +1,7 @@
-package testes;
+package com.mycompany.locadoraveiculos;
 
 
-public class Pagamento {
+
     
     public class Pagamento {
     private int id;
@@ -51,4 +51,4 @@ public class Pagamento {
     
 }
     
-}
+
