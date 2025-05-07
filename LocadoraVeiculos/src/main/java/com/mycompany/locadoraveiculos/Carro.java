@@ -135,5 +135,57 @@ public class Carro extends Veiculo {
             System.out.println("Erro ao listar carros: " + e.getMessage());
         }
     }
+    public static void editarCarro(int idVeiculo, String placa, String marca, String modelo, 
+                                 int anoFabricacao, double valorDiaria, String cor, 
+                                 int quilometragem, int numeroPortas, String tipoCombustivel) {
+        // Query para atualizar a tabela veiculos
+        String queryVeiculo = "UPDATE veiculos SET placa = ?, marca = ?, modelo = ?, " +
+                             "ano_fabricacao = ?, valor_diaria = ?, cor = ?, quilometragem = ? " +
+                             "WHERE id = ? AND tipo = 'CARRO'";
+        
+        // Query para atualizar a tabela carros
+        String queryCarro = "UPDATE carros SET numero_portas = ?, tipo_combustivel = ? " +
+                          "WHERE id_veiculo = ?";
+
+        try (Connection connection = Conexao.getConnection()) {
+            // Inicia transação
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo);
+                 PreparedStatement stmtCarro = connection.prepareStatement(queryCarro)) {
+                
+                // Atualiza dados na tabela veiculos
+                stmtVeiculo.setString(1, placa);
+                stmtVeiculo.setString(2, marca);
+                stmtVeiculo.setString(3, modelo);
+                stmtVeiculo.setInt(4, anoFabricacao);
+                stmtVeiculo.setDouble(5, valorDiaria);
+                stmtVeiculo.setString(6, cor);
+                stmtVeiculo.setInt(7, quilometragem);
+                stmtVeiculo.setInt(8, idVeiculo);
+                int rowsVeiculo = stmtVeiculo.executeUpdate();
+
+                // Atualiza dados na tabela carros
+                stmtCarro.setInt(1, numeroPortas);
+                stmtCarro.setString(2, tipoCombustivel);
+                stmtCarro.setInt(3, idVeiculo);
+                int rowsCarro = stmtCarro.executeUpdate();
+
+                if (rowsVeiculo > 0 && rowsCarro > 0) {
+                    connection.commit();
+                    System.out.println("Carro atualizado com sucesso.");
+                } else {
+                    connection.rollback();
+                    System.out.println("Carro não encontrado ou dados inconsistentes.");
+                }
+                
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Erro ao editar carro: " + e.getMessage());
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+        }
+    }
 
 }

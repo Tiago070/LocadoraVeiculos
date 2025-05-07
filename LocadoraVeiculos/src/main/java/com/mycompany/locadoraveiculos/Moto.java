@@ -137,6 +137,57 @@ public class Moto extends Veiculo {
             System.out.println("Erro ao listar motos: " + e.getMessage());
         }
     }
-    
+    public static void editarMoto(int idVeiculo, String placa, String marca, String modelo, 
+                                int anoFabricacao, double valorDiaria, String cor, 
+                                int quilometragem, int cilindradas, boolean partidaEletrica) {
+        // Query para atualizar a tabela veiculos
+        String queryVeiculo = "UPDATE veiculos SET placa = ?, marca = ?, modelo = ?, " +
+                             "ano_fabricacao = ?, valor_diaria = ?, cor = ?, quilometragem = ? " +
+                             "WHERE id = ? AND tipo = 'MOTO'";
+        
+        // Query para atualizar a tabela motos
+        String queryMoto = "UPDATE motos SET cilindradas = ?, partida_eletrica = ? " +
+                          "WHERE id_veiculo = ?";
+
+        try (Connection connection = Conexao.getConnection()) {
+            // Inicia transação
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo);
+                 PreparedStatement stmtMoto = connection.prepareStatement(queryMoto)) {
+                
+                // Atualiza dados na tabela veiculos
+                stmtVeiculo.setString(1, placa);
+                stmtVeiculo.setString(2, marca);
+                stmtVeiculo.setString(3, modelo);
+                stmtVeiculo.setInt(4, anoFabricacao);
+                stmtVeiculo.setDouble(5, valorDiaria);
+                stmtVeiculo.setString(6, cor);
+                stmtVeiculo.setInt(7, quilometragem);
+                stmtVeiculo.setInt(8, idVeiculo);
+                int rowsVeiculo = stmtVeiculo.executeUpdate();
+
+                // Atualiza dados na tabela motos
+                stmtMoto.setInt(1, cilindradas);
+                stmtMoto.setBoolean(2, partidaEletrica);
+                stmtMoto.setInt(3, idVeiculo);
+                int rowsMoto = stmtMoto.executeUpdate();
+
+                if (rowsVeiculo > 0 && rowsMoto > 0) {
+                    connection.commit();
+                    System.out.println("Moto atualizada com sucesso.");
+                } else {
+                    connection.rollback();
+                    System.out.println("Moto não encontrada ou dados inconsistentes.");
+                }
+                
+            } catch (SQLException e) {
+                connection.rollback();
+                System.out.println("Erro ao editar moto: " + e.getMessage());
+            }
+        } catch (SQLException e) {
+            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+        }
+    }
 }
 
