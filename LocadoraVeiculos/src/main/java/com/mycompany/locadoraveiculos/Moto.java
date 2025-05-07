@@ -103,5 +103,40 @@ public class Moto extends Veiculo {
             System.out.println("Erro na conexão com o banco: " + e.getMessage());
         }
     }
+    public static void listarMotos() {
+        String query = "SELECT v.*, m.cilindradas, m.partida_eletrica " +
+                      "FROM veiculos v " +
+                      "JOIN motos m ON v.id = m.id_veiculo " +
+                      "WHERE v.tipo = 'MOTO'";
+
+        try (Connection connection = Conexao.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(query)) {
+
+            System.out.println("\nMotos cadastradas:");
+            System.out.println("----------------------------------------------------------------");
+            System.out.printf("| %-4s | %-10s | %-15s | %-15s | %-4s | %-10s | %-15s |\n", 
+                             "ID", "Placa", "Marca", "Modelo", "Ano", "Cilindradas", "Partida Elétrica");
+            System.out.println("----------------------------------------------------------------");
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String placa = rs.getString("placa");
+                String marca = rs.getString("marca");
+                String modelo = rs.getString("modelo");
+                int ano = rs.getInt("ano_fabricacao");
+                int cilindradas = rs.getInt("cilindradas");
+                boolean partidaEletrica = rs.getBoolean("partida_eletrica");
+
+                System.out.printf("| %-4d | %-10s | %-15s | %-15s | %-4d | %-10d | %-15s |\n",
+                                id, placa, marca, modelo, ano, cilindradas, 
+                                partidaEletrica ? "Sim" : "Não");
+            }
+            System.out.println("----------------------------------------------------------------");
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar motos: " + e.getMessage());
+        }
+    }
+    
 }
 
