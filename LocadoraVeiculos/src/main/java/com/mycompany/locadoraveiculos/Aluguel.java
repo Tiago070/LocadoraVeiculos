@@ -153,6 +153,6 @@ public class Aluguel {
 
     public Veiculo getVeiculo() {
         return veiculo;
-    }
+    }
 
 }

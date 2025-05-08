@@ -119,6 +119,6 @@ public class Pagamento {
 
         } catch (SQLException e) {
             System.out.println("Erro ao listar pagamentos: " + e.getMessage());
-        }
-    }
+        }
+    }
 }
