@@ -23,7 +23,7 @@ public class Aluguel {
         this.dataFim = dataFim;
     }
 
-    public double calcularTotal() {
+    public double calcularTotalAluguel() {
         long dias = ChronoUnit.DAYS.between(dataInicio, dataFim);
         return dias * veiculo.getPrecoDiario();
     }
@@ -36,27 +36,27 @@ public class Aluguel {
 
     // Métodos de controle
 
-    public static void inserir(Cliente cliente, Veiculo veiculo, LocalDate dataInicio, LocalDate dataFim) {
+    public static void inserirAluguel(Cliente cliente, Veiculo veiculo, LocalDate dataInicio, LocalDate dataFim) {
         Aluguel novo = new Aluguel(proximoId++, cliente, veiculo, dataInicio, dataFim);
         listaAlugueis.add(novo);
-        System.out.println("✅ Aluguel inserido com sucesso!");
+        System.out.println("Aluguel inserido com sucesso!");
     }
 
-    public static void editar(int id, Cliente cliente, Veiculo veiculo, LocalDate dataInicio, LocalDate dataFim) {
+    public static void editarAluguel(int id, Cliente cliente, Veiculo veiculo, LocalDate dataInicio, LocalDate dataFim) {
         for (Aluguel a : listaAlugueis) {
             if (a.id == id) {
                 a.cliente = cliente;
                 a.veiculo = veiculo;
                 a.dataInicio = dataInicio;
                 a.dataFim = dataFim;
-                System.out.println("✏️ Aluguel editado com sucesso!");
+                System.out.println(" Aluguel editado com sucesso!");
                 return;
             }
         }
-        System.out.println("❌ Aluguel com ID " + id + " não encontrado.");
+        System.out.println("Aluguel com ID " + id + " não encontrado.");
     }
 
-    public static void apagar(int id) {
+    public static void apagarAluguel(int id) {
         Aluguel encontrado = null;
         for (Aluguel a : listaAlugueis) {
             if (a.id == id) {
@@ -66,41 +66,20 @@ public class Aluguel {
         }
         if (encontrado != null) {
             listaAlugueis.remove(encontrado);
-            System.out.println("🗑️ Aluguel removido com sucesso!");
+            System.out.println("️ Aluguel removido com sucesso!");
         } else {
-            System.out.println("❌ Aluguel com ID " + id + " não encontrado.");
+            System.out.println(" Aluguel com ID " + id + " não encontrado.");
         }
     }
 
-    public static void listar() {
+    public static void listarAluguel() {
         if (listaAlugueis.isEmpty()) {
-            System.out.println("📭 Nenhum aluguel cadastrado.");
+            System.out.println(" Nenhum aluguel cadastrado.");
         } else {
-            System.out.println("📋 Lista de Aluguéis:");
+            System.out.println(" Lista de Aluguéis:");
             for (Aluguel a : listaAlugueis) {
                 System.out.println(a);
             }
         }
-    }
-
-    // Getters (se precisar)
-    public int getId() {
-        return id;
-    }
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-    public Veiculo getVeiculo() {
-        return veiculo;
-    }
-
-    public LocalDate getDataInicio() {
-        return dataInicio;
-    }
-
-    public LocalDate getDataFim() {
-        return dataFim;
     }
 }
