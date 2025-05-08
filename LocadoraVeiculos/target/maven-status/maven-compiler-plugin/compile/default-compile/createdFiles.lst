@@ -1,0 +1,8 @@
+com\mycompany\locadoraveiculos\Conexao.class
+com\mycompany\locadoraveiculos\Aluguel.class
+com\mycompany\locadoraveiculos\Pagamento.class
+com\mycompany\locadoraveiculos\LocadoraVeiculos.class
+com\mycompany\locadoraveiculos\Veiculo.class
+com\mycompany\locadoraveiculos\Cliente.class
+com\mycompany\locadoraveiculos\Moto.class
+com\mycompany\locadoraveiculos\Carro.class

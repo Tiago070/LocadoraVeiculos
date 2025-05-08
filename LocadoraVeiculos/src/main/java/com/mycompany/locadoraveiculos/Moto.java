@@ -3,208 +3,139 @@ package com.mycompany.locadoraveiculos;
 import java.sql.*;
 
 public class Moto extends Veiculo {
-
     private int cilindradas;
     private String tipoMoto;
     private boolean partidaEletrica;
     private String tipoFreio;
 
-    public Moto(int id, String modelo, String placa,String marca,String cor, int ano,int quilometragem, double precoDiario,
-            int cilindradas, String tipoMoto, boolean partidaEletrica, String tipoFreio) {
-        super(id, modelo, placa, ano, precoDiario);
+    public Moto(int id, String placa, String marca, String modelo, int anoFabricacao,
+                double valorDiaria, String cor, int quilometragem, int cilindradas,
+                boolean partidaEletrica, String tipoMoto, String tipoFreio) {
+        super(id, modelo, placa, anoFabricacao, valorDiaria);
+        this.setMarca(marca);
+        this.setCor(cor);
+        this.setQuilometragem(quilometragem);
         this.cilindradas = cilindradas;
         this.tipoMoto = tipoMoto;
         this.partidaEletrica = partidaEletrica;
-        this.tipoFreio = tipoFreio;
-    }
-
-    @Override
-    public double calcularSeguro() {
-        return getPrecoDiario() * 0.15 + 10;
-    }
-
-    // Getters e Setters
-    public int getCilindradas() {
-        return cilindradas;
-    }
-
-    public String getTipoMoto() {
-        return tipoMoto;
-    }
-
-    public boolean isPartidaEletrica() {
-        return partidaEletrica;
-    }
-
-    public String getTipoFreio() {
-        return tipoFreio;
-    }
-
-    public void setCilindradas(int cilindradas) {
-        this.cilindradas = cilindradas;
-    }
-
-    public void setTipoMoto(String tipoMoto) {
-        this.tipoMoto = tipoMoto;
-    }
-
-    public void setPartidaEletrica(boolean partidaEletrica) {
-        this.partidaEletrica = partidaEletrica;
-    }
-
-    public void setTipoFreio(String tipoFreio) {
         this.tipoFreio = tipoFreio;
     }
 
     public static void cadastrarMoto(String placa, String marca, String modelo, int anoFabricacao,
-            double valorDiaria, String cor, int quilometragem,
-            int cilindradas, boolean partidaEletrica,
-            String tipoMoto, String tipoFreio) {
-        String queryVeiculo = "INSERT INTO veiculos (placa, marca, modelo, ano_fabricacao, "
-                + "valor_diaria, cor, quilometragem, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, 'MOTO')";
+                                     double valorDiaria, String cor, int quilometragem,
+                                     int cilindradas, boolean partidaEletrica,
+                                     String tipoMoto, String tipoFreio) {
+        try (Connection conn = Conexao.getConnection()) {
+            String sqlVeiculo = "INSERT INTO veiculo (placa, marca, modelo, ano, precoDiario, cor, quilometragem) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement psVeiculo = conn.prepareStatement(sqlVeiculo, Statement.RETURN_GENERATED_KEYS);
+            psVeiculo.setString(1, placa);
+            psVeiculo.setString(2, marca);
+            psVeiculo.setString(3, modelo);
+            psVeiculo.setInt(4, anoFabricacao);
+            psVeiculo.setDouble(5, valorDiaria);
+            psVeiculo.setString(6, cor);
+            psVeiculo.setInt(7, quilometragem);
+            psVeiculo.executeUpdate();
 
-        String queryMoto = "INSERT INTO motos (id_veiculo, cilindradas, partida_eletrica, tipo_moto, tipo_freio) "
-                + "VALUES (LAST_INSERT_ID(), ?, ?, ?, ?)";
+            ResultSet rs = psVeiculo.getGeneratedKeys();
+            if (rs.next()) {
+                int idVeiculo = rs.getInt(1);
 
-        try (Connection connection = Conexao.getConnection()) {
-            connection.setAutoCommit(false);
-            try (PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo); PreparedStatement stmtMoto = connection.prepareStatement(queryMoto)) {
-
-                stmtVeiculo.setString(1, placa);
-                stmtVeiculo.setString(2, marca);
-                stmtVeiculo.setString(3, modelo);
-                stmtVeiculo.setInt(4, anoFabricacao);
-                stmtVeiculo.setDouble(5, valorDiaria);
-                stmtVeiculo.setString(6, cor);
-                stmtVeiculo.setInt(7, quilometragem);
-                stmtVeiculo.executeUpdate();
-
-                stmtMoto.setInt(1, cilindradas);
-                stmtMoto.setBoolean(2, partidaEletrica);
-                stmtMoto.setString(3, tipoMoto);
-                stmtMoto.setString(4, tipoFreio);
-                stmtMoto.executeUpdate();
-
-                connection.commit();
-                System.out.println("Moto cadastrada com sucesso.");
-            } catch (SQLException e) {
-                connection.rollback();
-                System.out.println("Erro ao cadastrar moto: " + e.getMessage());
+                String sqlMoto = "INSERT INTO moto (id, cilindradas, partidaEletrica, tipoMoto, tipoFreio) " +
+                                 "VALUES (?, ?, ?, ?, ?)";
+                PreparedStatement psMoto = conn.prepareStatement(sqlMoto);
+                psMoto.setInt(1, idVeiculo);
+                psMoto.setInt(2, cilindradas);
+                psMoto.setBoolean(3, partidaEletrica);
+                psMoto.setString(4, tipoMoto);
+                psMoto.setString(5, tipoFreio);
+                psMoto.executeUpdate();
             }
+            System.out.println("Moto cadastrada com sucesso!");
         } catch (SQLException e) {
-            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+            System.out.println("Erro ao cadastrar moto: " + e.getMessage());
         }
     }
 
     public static void listarMotos() {
-        String query = "SELECT v.*, m.cilindradas, m.partida_eletrica, m.tipo_moto, m.tipo_freio "
-                + "FROM veiculos v JOIN motos m ON v.id = m.id_veiculo WHERE v.tipo = 'MOTO'";
-
-        try (Connection connection = Conexao.getConnection(); Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
-
-            System.out.println("\nMotos cadastradas:");
-            System.out.println("----------------------------------------------------------------------------------------------");
-            System.out.printf("| %-4s | %-10s | %-10s | %-15s | %-4s | %-5s | %-10s | %-10s | %-10s |\n",
-                    "ID", "Placa", "Marca", "Modelo", "Ano", "CC", "Partida", "Tipo", "Freio");
-            System.out.println("----------------------------------------------------------------------------------------------");
+        try (Connection conn = Conexao.getConnection()) {
+            String sql = "SELECT v.id, v.placa, v.marca, v.modelo, v.ano, v.precoDiario, v.cor, v.quilometragem, " +
+                         "m.cilindradas, m.partidaEletrica, m.tipoMoto, m.tipoFreio " +
+                         "FROM veiculo v INNER JOIN moto m ON v.id = m.id";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String placa = rs.getString("placa");
-                String marca = rs.getString("marca");
-                String modelo = rs.getString("modelo");
-                int ano = rs.getInt("ano_fabricacao");
-                int cilindradas = rs.getInt("cilindradas");
-                boolean partidaEletrica = rs.getBoolean("partida_eletrica");
-                String tipoMoto = rs.getString("tipo_moto");
-                String tipoFreio = rs.getString("tipo_freio");
-
-                System.out.printf("| %-4d | %-10s | %-10s | %-15s | %-4d | %-5dcc | %-10s | %-10s | %-10s |\n",
-                        id, placa, marca, modelo, ano, cilindradas,
-                        partidaEletrica ? "Sim" : "Não", tipoMoto, tipoFreio);
+                System.out.printf("ID: %d | Modelo: %s | Marca: %s | Placa: %s | Ano: %d | Preço: R$%.2f | Cor: %s | Km: %d\n",
+                                  rs.getInt("id"), rs.getString("modelo"), rs.getString("marca"),
+                                  rs.getString("placa"), rs.getInt("ano"), rs.getDouble("precoDiario"),
+                                  rs.getString("cor"), rs.getInt("quilometragem"));
+                System.out.printf("Cilindradas: %d | Partida Elétrica: %s | Tipo: %s | Freio: %s\n\n",
+                                  rs.getInt("cilindradas"),
+                                  rs.getBoolean("partidaEletrica") ? "Sim" : "Não",
+                                  rs.getString("tipoMoto"),
+                                  rs.getString("tipoFreio"));
             }
-            System.out.println("----------------------------------------------------------------------------------------------");
-
         } catch (SQLException e) {
             System.out.println("Erro ao listar motos: " + e.getMessage());
         }
     }
 
-    public static void editarMoto(int idVeiculo, String placa, String marca, String modelo,
-            int anoFabricacao, double valorDiaria, String cor,
-            int quilometragem, int cilindradas, boolean partidaEletrica,
-            String tipoMoto, String tipoFreio) {
-        String queryVeiculo = "UPDATE veiculos SET placa = ?, marca = ?, modelo = ?, "
-                + "ano_fabricacao = ?, valor_diaria = ?, cor = ?, quilometragem = ? "
-                + "WHERE id = ? AND tipo = 'MOTO'";
+    public static void editarMoto(int id, String placa, String marca, String modelo,
+                                  int anoFabricacao, double valorDiaria, String cor,
+                                  int quilometragem, int cilindradas, boolean partidaEletrica,
+                                  String tipoMoto, String tipoFreio) {
+        try (Connection conn = Conexao.getConnection()) {
+            String sqlVeiculo = "UPDATE veiculo SET placa = ?, marca = ?, modelo = ?, ano = ?, precoDiario = ?, " +
+                                "cor = ?, quilometragem = ? WHERE id = ?";
+            PreparedStatement psVeiculo = conn.prepareStatement(sqlVeiculo);
+            psVeiculo.setString(1, placa);
+            psVeiculo.setString(2, marca);
+            psVeiculo.setString(3, modelo);
+            psVeiculo.setInt(4, anoFabricacao);
+            psVeiculo.setDouble(5, valorDiaria);
+            psVeiculo.setString(6, cor);
+            psVeiculo.setInt(7, quilometragem);
+            psVeiculo.setInt(8, id);
+            psVeiculo.executeUpdate();
 
-        String queryMoto = "UPDATE motos SET cilindradas = ?, partida_eletrica = ?, tipo_moto = ?, tipo_freio = ? "
-                + "WHERE id_veiculo = ?";
+            String sqlMoto = "UPDATE moto SET cilindradas = ?, partidaEletrica = ?, tipoMoto = ?, tipoFreio = ? " +
+                             "WHERE id = ?";
+            PreparedStatement psMoto = conn.prepareStatement(sqlMoto);
+            psMoto.setInt(1, cilindradas);
+            psMoto.setBoolean(2, partidaEletrica);
+            psMoto.setString(3, tipoMoto);
+            psMoto.setString(4, tipoFreio);
+            psMoto.setInt(5, id);
+            psMoto.executeUpdate();
 
-        try (Connection connection = Conexao.getConnection()) {
-            connection.setAutoCommit(false);
-            try (PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo); PreparedStatement stmtMoto = connection.prepareStatement(queryMoto)) {
-
-                stmtVeiculo.setString(1, placa);
-                stmtVeiculo.setString(2, marca);
-                stmtVeiculo.setString(3, modelo);
-                stmtVeiculo.setInt(4, anoFabricacao);
-                stmtVeiculo.setDouble(5, valorDiaria);
-                stmtVeiculo.setString(6, cor);
-                stmtVeiculo.setInt(7, quilometragem);
-                stmtVeiculo.setInt(8, idVeiculo);
-                int rowsVeiculo = stmtVeiculo.executeUpdate();
-
-                stmtMoto.setInt(1, cilindradas);
-                stmtMoto.setBoolean(2, partidaEletrica);
-                stmtMoto.setString(3, tipoMoto);
-                stmtMoto.setString(4, tipoFreio);
-                stmtMoto.setInt(5, idVeiculo);
-                int rowsMoto = stmtMoto.executeUpdate();
-
-                if (rowsVeiculo > 0 && rowsMoto > 0) {
-                    connection.commit();
-                    System.out.println("Moto atualizada com sucesso.");
-                } else {
-                    connection.rollback();
-                    System.out.println("Moto não encontrada ou dados inconsistentes.");
-                }
-            } catch (SQLException e) {
-                connection.rollback();
-                System.out.println("Erro ao editar moto: " + e.getMessage());
-            }
+            System.out.println("Moto editada com sucesso!");
         } catch (SQLException e) {
-            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+            System.out.println("Erro ao editar moto: " + e.getMessage());
         }
     }
 
-    public static void apagarMoto(int idVeiculo) {
-        String queryMoto = "DELETE FROM motos WHERE id_veiculo = ?";
-        String queryVeiculo = "DELETE FROM veiculos WHERE id = ? AND tipo = 'MOTO'";
+    public static void apagarMoto(int id) {
+        try (Connection conn = Conexao.getConnection()) {
+            String sqlMoto = "DELETE FROM moto WHERE id = ?";
+            PreparedStatement psMoto = conn.prepareStatement(sqlMoto);
+            psMoto.setInt(1, id);
+            psMoto.executeUpdate();
 
-        try (Connection connection = Conexao.getConnection()) {
-            connection.setAutoCommit(false);
-            try (PreparedStatement stmtMoto = connection.prepareStatement(queryMoto); PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo)) {
+            String sqlVeiculo = "DELETE FROM veiculo WHERE id = ?";
+            PreparedStatement psVeiculo = conn.prepareStatement(sqlVeiculo);
+            psVeiculo.setInt(1, id);
+            psVeiculo.executeUpdate();
 
-                stmtMoto.setInt(1, idVeiculo);
-                int rowsMoto = stmtMoto.executeUpdate();
-
-                stmtVeiculo.setInt(1, idVeiculo);
-                int rowsVeiculo = stmtVeiculo.executeUpdate();
-
-                if (rowsMoto > 0 && rowsVeiculo > 0) {
-                    connection.commit();
-                    System.out.println("Moto apagada com sucesso.");
-                } else {
-                    connection.rollback();
-                    System.out.println("Moto não encontrada.");
-                }
-            } catch (SQLException e) {
-                connection.rollback();
-                System.out.println("Erro ao apagar moto: " + e.getMessage());
-            }
+            System.out.println("Moto removida com sucesso!");
         } catch (SQLException e) {
-            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+            System.out.println("Erro ao apagar moto: " + e.getMessage());
         }
+    }
+
+    @Override
+    public double calcularSeguro() {
+        return this.getPrecoDiario() * 0.10; // Exemplo para motos
     }
 }

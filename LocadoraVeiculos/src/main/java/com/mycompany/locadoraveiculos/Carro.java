@@ -1,241 +1,140 @@
 package com.mycompany.locadoraveiculos;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Carro extends Veiculo {
-
     private int numPortas;
     private String tipoCombustivel;
     private boolean arCondicionado;
     private String cambio;
 
-    public Carro(int id, String modelo, String placa,String marca, int ano,String cor,int quilometragem,  double precoDiario,
-            int numPortas, String tipoCombustivel, boolean arCondicionado, String cambio) {
-        super(id, modelo, placa, ano, precoDiario);
+    public Carro(int id, String placa, String marca, String modelo, int anoFabricacao,
+                 double valorDiaria, String cor, int quilometragem, int numPortas,
+                 String tipoCombustivel, boolean arCondicionado, String cambio) {
+        super(id, modelo, placa, anoFabricacao, valorDiaria);
+        this.setMarca(marca);
+        this.setCor(cor);
+        this.setQuilometragem(quilometragem);
         this.numPortas = numPortas;
         this.tipoCombustivel = tipoCombustivel;
         this.arCondicionado = arCondicionado;
-        this.cambio = cambio;
-    }
-
-    @Override
-    public double calcularSeguro() {
-        // Seguro para carro: 20% do preço diário + taxa fixa de R$15
-        return getPrecoDiario() * 0.20 + 15;
-    }
-
-    // Getters e Setters específicos
-    public int getNumPortas() {
-        return numPortas;
-    }
-
-    public String getTipoCombustivel() {
-        return tipoCombustivel;
-    }
-
-    public boolean isArCondicionado() {
-        return arCondicionado;
-    }
-
-    public String getCambio() {
-        return cambio;
-    }
-
-    public void setNumPortas(int numPortas) {
-        this.numPortas = numPortas;
-    }
-
-    public void setTipoCombustivel(String tipoCombustivel) {
-        this.tipoCombustivel = tipoCombustivel;
-    }
-
-    public void setArCondicionado(boolean arCondicionado) {
-        this.arCondicionado = arCondicionado;
-    }
-
-    public void setCambio(String cambio) {
         this.cambio = cambio;
     }
 
     public static void cadastrarCarro(String placa, String marca, String modelo, int anoFabricacao,
-        double valorDiaria, String cor, int quilometragem,
-        int numeroPortas, String tipoCombustivel, boolean arCondicionado, String cambio) {
-        // Primeiro cadastra o veículo na tabela pai
-        String queryVeiculo = "INSERT INTO veiculos (placa, marca, modelo, ano_fabricacao, "
-                + "valor_diaria, cor, quilometragem, tipo) VALUES (?, ?, ?, ?, ?, ?, ?, 'CARRO')";
+                                      double valorDiaria, String cor, int quilometragem,
+                                      int numPortas, String tipoCombustivel, boolean arCondicionado,
+                                      String cambio) {
+        try (Connection conn = Conexao.getConnection()) {
+            String sqlVeiculo = "INSERT INTO veiculo (placa, marca, modelo, ano, precoDiario, cor, quilometragem) " +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement psVeiculo = conn.prepareStatement(sqlVeiculo, Statement.RETURN_GENERATED_KEYS);
+            psVeiculo.setString(1, placa);
+            psVeiculo.setString(2, marca);
+            psVeiculo.setString(3, modelo);
+            psVeiculo.setInt(4, anoFabricacao);
+            psVeiculo.setDouble(5, valorDiaria);
+            psVeiculo.setString(6, cor);
+            psVeiculo.setInt(7, quilometragem);
+            psVeiculo.executeUpdate();
 
-        // Depois cadastra os dados específicos do carro
-        String queryCarro = "INSERT INTO carros (id_veiculo, numero_portas, tipo_combustivel, ar_condicionado, cambio) "
-                  + "VALUES (LAST_INSERT_ID(), ?, ?, ?, ?)";
+            ResultSet rs = psVeiculo.getGeneratedKeys();
+            if (rs.next()) {
+                int idVeiculo = rs.getInt(1);
 
-
-        try (Connection connection = Conexao.getConnection()) {
-            // Inicia transação
-            connection.setAutoCommit(false);
-
-            try (PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo); PreparedStatement stmtCarro = connection.prepareStatement(queryCarro)) {
-
-                // Cadastra o veículo
-                stmtVeiculo.setString(1, placa);
-                stmtVeiculo.setString(2, marca);
-                stmtVeiculo.setString(3, modelo);
-                stmtVeiculo.setInt(4, anoFabricacao);
-                stmtVeiculo.setDouble(5, valorDiaria);
-                stmtVeiculo.setString(6, cor);
-                stmtVeiculo.setInt(7, quilometragem);
-                stmtVeiculo.executeUpdate();
-
-                // Cadastra os dados específicos do carro
-                stmtCarro.setInt(1, numeroPortas);
-                stmtCarro.setString(2, tipoCombustivel);
-                stmtCarro.setBoolean(3, arCondicionado);
-                stmtCarro.setString(4, cambio);
-                stmtCarro.executeUpdate();
-
-                // Confirma transação
-                connection.commit();
-                System.out.println("Carro cadastrado com sucesso.");
-
-            } catch (SQLException e) {
-                // Em caso de erro, faz rollback
-                connection.rollback();
-                System.out.println("Erro ao cadastrar carro: " + e.getMessage());
+                String sqlCarro = "INSERT INTO carro (id, portas, tipoCombustivel, arCondicionado, tipoCambio) " +
+                                  "VALUES (?, ?, ?, ?, ?)";
+                PreparedStatement psCarro = conn.prepareStatement(sqlCarro);
+                psCarro.setInt(1, idVeiculo);
+                psCarro.setInt(2, numPortas);
+                psCarro.setString(3, tipoCombustivel);
+                psCarro.setBoolean(4, arCondicionado);
+                psCarro.setString(5, cambio);
+                psCarro.executeUpdate();
             }
+            System.out.println("Carro cadastrado com sucesso!");
         } catch (SQLException e) {
-            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+            System.out.println("Erro ao cadastrar carro: " + e.getMessage());
         }
     }
+
     public static void listarCarros() {
-        String query = "SELECT v.*, c.numero_portas, c.tipo_combustivel, c.ar_condicionado, c.cambio " +
-               "FROM veiculos v " +
-               "JOIN carros c ON v.id = c.id_veiculo " +
-               "WHERE v.tipo = 'CARRO'";
-
-
-        try (Connection connection = Conexao.getConnection();
-             Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(query)) {
-
-            System.out.println("\nCarros cadastrados:");
-            System.out.println("------------------------------------------------------------");
-            System.out.printf("| %-4s | %-10s | %-15s | %-15s | %-4s | %-8s | %-15s | %-5s | %-10s |\n",
-                                "ID", "Placa", "Marca", "Modelo", "Ano", "Portas", "Combustível", "Ar", "Câmbio");
-
-            System.out.println("------------------------------------------------------------");
+        try (Connection conn = Conexao.getConnection()) {
+            String sql = "SELECT v.id, v.placa, v.marca, v.modelo, v.ano, v.precoDiario, v.cor, v.quilometragem, " +
+                         "c.portas, c.tipoCombustivel, c.arCondicionado, c.tipoCambio " +
+                         "FROM veiculo v INNER JOIN carro c ON v.id = c.id";
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
 
             while (rs.next()) {
-                int id = rs.getInt("id");
-                String placa = rs.getString("placa");
-                String marca = rs.getString("marca");
-                String modelo = rs.getString("modelo");
-                int ano = rs.getInt("ano_fabricacao");
-                int portas = rs.getInt("numero_portas");
-                String combustivel = rs.getString("tipo_combustivel");
-                boolean arCondicionado = rs.getBoolean("ar_condicionado");
-                String cambio = rs.getString("cambio");
-
-                System.out.printf("| %-4d | %-10s | %-15s | %-15s | %-4d | %-8d | %-15s | %-5s | %-10s |\n",
-                  id, placa, marca, modelo, ano, portas, combustivel,
-                  arCondicionado ? "Sim" : "Não", cambio);
+                System.out.printf("ID: %d | Modelo: %s | Marca: %s | Placa: %s | Ano: %d | Preço: R$%.2f | Cor: %s | Km: %d\n",
+                                  rs.getInt("id"), rs.getString("modelo"), rs.getString("marca"),
+                                  rs.getString("placa"), rs.getInt("ano"), rs.getDouble("precoDiario"),
+                                  rs.getString("cor"), rs.getInt("quilometragem"));
+                System.out.printf("Portas: %d | Combustível: %s | Ar Condicionado: %s | Câmbio: %s\n\n",
+                                  rs.getInt("portas"), rs.getString("tipoCombustivel"),
+                                  rs.getBoolean("arCondicionado") ? "Sim" : "Não",
+                                  rs.getString("tipoCambio"));
             }
-            System.out.println("------------------------------------------------------------");
         } catch (SQLException e) {
             System.out.println("Erro ao listar carros: " + e.getMessage());
         }
     }
-    public static void editarCarro(int idVeiculo, String placa, String marca, String modelo,
-        int anoFabricacao, double valorDiaria, String cor,
-        int quilometragem, int numeroPortas, String tipoCombustivel,
-        boolean arCondicionado, String cambio) {
-        // Query para atualizar a tabela veiculos
-        String queryVeiculo = "UPDATE veiculos SET placa = ?, marca = ?, modelo = ?, " +
-                             "ano_fabricacao = ?, valor_diaria = ?, cor = ?, quilometragem = ? " +
-                             "WHERE id = ? AND tipo = 'CARRO'";
-        
-        // Query para atualizar a tabela carros
-        String queryCarro = "UPDATE carros SET numero_portas = ?, tipo_combustivel = ?, ar_condicionado = ?, cambio = ? " +
-                    "WHERE id_veiculo = ?";
 
+    public static void editarCarro(int id, String placa, String marca, String modelo, int anoFabricacao,
+                                   double valorDiaria, String cor, int quilometragem, int numPortas,
+                                   String tipoCombustivel, boolean arCondicionado, String cambio) {
+        try (Connection conn = Conexao.getConnection()) {
+            String sqlVeiculo = "UPDATE veiculo SET placa = ?, marca = ?, modelo = ?, ano = ?, precoDiario = ?, " +
+                                "cor = ?, quilometragem = ? WHERE id = ?";
+            PreparedStatement psVeiculo = conn.prepareStatement(sqlVeiculo);
+            psVeiculo.setString(1, placa);
+            psVeiculo.setString(2, marca);
+            psVeiculo.setString(3, modelo);
+            psVeiculo.setInt(4, anoFabricacao);
+            psVeiculo.setDouble(5, valorDiaria);
+            psVeiculo.setString(6, cor);
+            psVeiculo.setInt(7, quilometragem);
+            psVeiculo.setInt(8, id);
+            psVeiculo.executeUpdate();
 
-        try (Connection connection = Conexao.getConnection()) {
-            // Inicia transação
-            connection.setAutoCommit(false);
+            String sqlCarro = "UPDATE carro SET portas = ?, tipoCombustivel = ?, arCondicionado = ?, tipoCambio = ? " +
+                              "WHERE id = ?";
+            PreparedStatement psCarro = conn.prepareStatement(sqlCarro);
+            psCarro.setInt(1, numPortas);
+            psCarro.setString(2, tipoCombustivel);
+            psCarro.setBoolean(3, arCondicionado);
+            psCarro.setString(4, cambio);
+            psCarro.setInt(5, id);
+            psCarro.executeUpdate();
 
-            try (PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo);
-                 PreparedStatement stmtCarro = connection.prepareStatement(queryCarro)) {
-                
-                // Atualiza dados na tabela veiculos
-                stmtVeiculo.setString(1, placa);
-                stmtVeiculo.setString(2, marca);
-                stmtVeiculo.setString(3, modelo);
-                stmtVeiculo.setInt(4, anoFabricacao);
-                stmtVeiculo.setDouble(5, valorDiaria);
-                stmtVeiculo.setString(6, cor);
-                stmtVeiculo.setInt(7, quilometragem);
-                stmtVeiculo.setInt(8, idVeiculo);
-                int rowsVeiculo = stmtVeiculo.executeUpdate();
-
-                // Atualiza dados na tabela carros
-                stmtCarro.setInt(1, numeroPortas);
-                stmtCarro.setString(2, tipoCombustivel);
-                stmtCarro.setBoolean(3, arCondicionado);
-                stmtCarro.setString(4, cambio);
-                stmtCarro.setInt(5, idVeiculo);
-                int rowsCarro = stmtCarro.executeUpdate();
-
-                if (rowsVeiculo > 0 && rowsCarro > 0) {
-                    connection.commit();
-                    System.out.println("Carro atualizado com sucesso.");
-                } else {
-                    connection.rollback();
-                    System.out.println("Carro não encontrado ou dados inconsistentes.");
-                }
-                
-            } catch (SQLException e) {
-                connection.rollback();
-                System.out.println("Erro ao editar carro: " + e.getMessage());
-            }
+            System.out.println("Carro editado com sucesso!");
         } catch (SQLException e) {
-            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+            System.out.println("Erro ao editar carro: " + e.getMessage());
         }
     }
-    public static void apagarCarro(int idVeiculo) {
-        // Primeiro deleta da tabela carros (filha)
-        String queryCarro = "DELETE FROM carros WHERE id_veiculo = ?";
-        // Depois deleta da tabela veiculos (pai)
-        String queryVeiculo = "DELETE FROM veiculos WHERE id = ? AND tipo = 'CARRO'";
 
-        try (Connection connection = Conexao.getConnection()) {
-            // Inicia transação
-            connection.setAutoCommit(false);
+    public static void apagarCarro(int id) {
+        try (Connection conn = Conexao.getConnection()) {
+            String sqlCarro = "DELETE FROM carro WHERE id = ?";
+            PreparedStatement psCarro = conn.prepareStatement(sqlCarro);
+            psCarro.setInt(1, id);
+            psCarro.executeUpdate();
 
-            try (PreparedStatement stmtCarro = connection.prepareStatement(queryCarro);
-                 PreparedStatement stmtVeiculo = connection.prepareStatement(queryVeiculo)) {
-                
-                // Deleta da tabela carros
-                stmtCarro.setInt(1, idVeiculo);
-                int rowsCarro = stmtCarro.executeUpdate();
+            String sqlVeiculo = "DELETE FROM veiculo WHERE id = ?";
+            PreparedStatement psVeiculo = conn.prepareStatement(sqlVeiculo);
+            psVeiculo.setInt(1, id);
+            psVeiculo.executeUpdate();
 
-                // Deleta da tabela veiculos
-                stmtVeiculo.setInt(1, idVeiculo);
-                int rowsVeiculo = stmtVeiculo.executeUpdate();
-
-                if (rowsCarro > 0 && rowsVeiculo > 0) {
-                    connection.commit();
-                    System.out.println("Carro apagado com sucesso.");
-                } else {
-                    connection.rollback();
-                    System.out.println("Carro não encontrado.");
-                }
-                
-            } catch (SQLException e) {
-                connection.rollback();
-                System.out.println("Erro ao apagar carro: " + e.getMessage());
-            }
+            System.out.println("Carro removido com sucesso!");
         } catch (SQLException e) {
-            System.out.println("Erro na conexão com o banco: " + e.getMessage());
+            System.out.println("Erro ao apagar carro: " + e.getMessage());
         }
     }
-    
 
+    @Override
+    public double calcularSeguro() {
+        return this.getPrecoDiario() * 0.15; // Exemplo
+    }
 }
