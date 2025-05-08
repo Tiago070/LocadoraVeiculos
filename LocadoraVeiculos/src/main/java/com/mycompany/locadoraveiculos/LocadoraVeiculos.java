@@ -23,6 +23,10 @@ public class LocadoraVeiculos {
             System.out.println("10. Listar Aluguéis");
             System.out.println("11. Editar Aluguel");
             System.out.println("12. Devolver Aluguel");
+            System.out.println("13. Cadastrar Cliente");  // Nova opção
+            System.out.println("14. Listar Clientes");    // Nova opção
+            System.out.println("15. Editar Cliente");     // Nova opção
+            System.out.println("16. Apagar Cliente");     // Nova opção
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -241,6 +245,46 @@ public class LocadoraVeiculos {
                         int idDevolucao = scanner.nextInt();
                         scanner.nextLine();
                         Aluguel.devolucaoAluguel(idDevolucao);
+                        break;
+
+                    case 13: // Cadastrar Cliente
+                        System.out.print("Nome: ");
+                        String nomeCliente = scanner.nextLine();
+                        System.out.print("CPF: ");
+                        String cpfCliente = scanner.nextLine();
+                        System.out.print("Telefone: ");
+                        String telefoneCliente = scanner.nextLine();
+                        System.out.print("Email: ");
+                        String emailCliente = scanner.nextLine();
+
+                        Cliente.cadastrarCliente(nomeCliente, cpfCliente, telefoneCliente, emailCliente);
+                        break;
+
+                    case 14: // Listar Clientes
+                        Cliente.listarClientes();
+                        break;
+
+                    case 15: // Editar Cliente
+                        System.out.print("ID do Cliente a editar: ");
+                        int idClienteEdit = scanner.nextInt();
+                        scanner.nextLine(); // Consumir a nova linha
+
+                        System.out.print("Novo Nome: ");
+                        String novoNomeCliente = scanner.nextLine();
+                        System.out.print("Novo CPF: ");
+                        String novoCpfCliente = scanner.nextLine();
+                        System.out.print("Novo Telefone: ");
+                        String novoTelefoneCliente = scanner.nextLine();
+                        System.out.print("Novo Email: ");
+                        String novoEmailCliente = scanner.nextLine();
+
+                        Cliente.editarCliente(idClienteEdit, novoNomeCliente, novoCpfCliente, novoTelefoneCliente, novoEmailCliente);
+                        break;
+
+                    case 16: // Apagar Cliente
+                        System.out.print("ID do Cliente a apagar: ");
+                        int idClienteDel = scanner.nextInt();
+                        Cliente.deletarCliente(idClienteDel);
                         break;
 
                     case 0:
