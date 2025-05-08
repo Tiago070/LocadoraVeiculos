@@ -56,30 +56,25 @@ public class Aluguel {
         System.out.println("Aluguel com ID " + id + " não encontrado.");
     }
 
-    public static void apagarAluguel(int id) {
-        Aluguel encontrado = null;
-        for (Aluguel a : listaAlugueis) {
-            if (a.id == id) {
-                encontrado = a;
-                break;
-            }
-        }
-        if (encontrado != null) {
-            listaAlugueis.remove(encontrado);
-            System.out.println("️ Aluguel removido com sucesso!");
-        } else {
-            System.out.println(" Aluguel com ID " + id + " não encontrado.");
+    public static void devolucaoAluguel(int id) {
+    for (Aluguel a : listaAlugueis) {
+        if (a.id == id) {
+            a.dataFim = LocalDate.now();
+            System.out.println(" Veículo devolvido com sucesso em " + a.dataFim + ". Total a pagar: R$" + a.calcularTotalAluguel());
+            return;
         }
     }
+    System.out.println("Aluguel com ID " + id + " não encontrado.");
+}
 
     public static void listarAluguel() {
-        if (listaAlugueis.isEmpty()) {
-            System.out.println(" Nenhum aluguel cadastrado.");
-        } else {
-            System.out.println(" Lista de Aluguéis:");
-            for (Aluguel a : listaAlugueis) {
-                System.out.println(a);
-            }
+    if (listaAlugueis.isEmpty()) {
+        System.out.println("Nenhum aluguel cadastrado.");
+    } else {
+        System.out.println("Lista de Aluguéis:");
+        for (Aluguel a : listaAlugueis) {
+            System.out.println(a); 
         }
     }
+}
 }
