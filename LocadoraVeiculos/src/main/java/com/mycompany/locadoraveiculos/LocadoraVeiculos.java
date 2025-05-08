@@ -27,6 +27,8 @@ public class LocadoraVeiculos {
             System.out.println("14. Listar Clientes");    // Nova opção
             System.out.println("15. Editar Cliente");     // Nova opção
             System.out.println("16. Apagar Cliente");     // Nova opção
+            System.out.println("17. Cadastrar Pagamento");
+            System.out.println("18. Listar Pagamentos");
             System.out.println("0. Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -285,6 +287,24 @@ public class LocadoraVeiculos {
                         System.out.print("ID do Cliente a apagar: ");
                         int idClienteDel = scanner.nextInt();
                         Cliente.deletarCliente(idClienteDel);
+                        break;
+
+                    case 17:
+                        System.out.print("ID do Aluguel: ");
+                        int idAluguelPg = scanner.nextInt();
+                        scanner.nextLine();
+                        Aluguel aluguelPg = Aluguel.buscarPorId(idAluguelPg);
+                        if (aluguelPg == null) {
+                            System.out.println("Aluguel não encontrado!");
+                            break;
+                        }
+                        System.out.print("Forma de Pagamento (Cartão, Pix, Dinheiro): ");
+                        String formaPg = scanner.nextLine();
+                        Pagamento.cadastrarPagamento(aluguelPg, formaPg);
+                        break;
+
+                    case 18:
+                        Pagamento.listarPagamentos();
                         break;
 
                     case 0:
