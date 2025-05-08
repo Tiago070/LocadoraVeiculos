@@ -188,15 +188,20 @@ public class LocadoraVeiculos {
 
                     case 9: // Cadastrar Aluguel
                         System.out.print("Nome do Cliente: ");
-                        scanner.nextLine(); // Consumir a nova linha
                         String nomeCliente = scanner.nextLine();
-                        Cliente cliente = new Cliente(nomeCliente); // ou buscar em uma lista, se existir
+
+                        // Buscar o cliente pelo nome (ou outro identificador)
+                        Cliente cliente = Cliente.buscarClientePorNome(nomeCliente); // Implementar esse método na classe Cliente
+
+                        if (cliente == null) {
+                            System.out.println("Cliente não encontrado!");
+                            break;
+                        }
 
                         System.out.print("ID do Veículo para alugar (Moto ou Carro): ");
                         int idVeiculo = scanner.nextInt();
                         scanner.nextLine(); // limpar
-                        // Você pode adaptar para realizar a busca com os IDs de moto ou carro
-                        Veiculo veiculo = Veiculo.buscarPorId(idVeiculo); // Isso precisa ser implementado na classe Veiculo
+                        Veiculo veiculo = Veiculo.buscarPorId(idVeiculo); // Supondo que exista este método
 
                         System.out.print("Data de Início (AAAA-MM-DD): ");
                         LocalDate inicio = LocalDate.parse(scanner.nextLine());
