@@ -62,7 +62,6 @@ public class LocadoraVeiculos {
                                 placaCarro, marcaCarro, modeloCarro, anoCarro, precoCarro,
                                 corCarro, kmCarro, numPortas, cambio, arCondicionado, combustivel
                         );
-
                         break;
 
                     case 2: // Listar Carros
@@ -212,7 +211,7 @@ public class LocadoraVeiculos {
                         break;
 
                     case 10: // Listar Aluguéis
-                        Aluguel.listarAluguel();
+                        Aluguel.listarAlugueis();
                         break;
 
                     case 11: // Editar Aluguel
