@@ -31,7 +31,7 @@ public class Aluguel {
     @Override
     public String toString() {
         return "Aluguel ID: " + id + " | Cliente: " + cliente.getNome() + " | Veículo: " + veiculo.getModelo() +
-               " | Início: " + dataInicio + " | Fim: " + dataFim + " | Total: R$" + calcularTotal();
+               " | Início: " + dataInicio + " | Fim: " + dataFim + " | Total: R$" + calcularTotalAluguel();
     }
 
     // Métodos de controle
