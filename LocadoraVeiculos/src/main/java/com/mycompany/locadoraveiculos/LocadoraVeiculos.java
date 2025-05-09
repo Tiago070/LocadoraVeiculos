@@ -62,7 +62,7 @@ public class LocadoraVeiculos {
                         String corCarro = scanner.nextLine();
                         System.out.print("Quilometragem: ");
                         int kmCarro = scanner.nextInt();
-                        scanner.nextLine(); // Consumir a nova linha
+                        scanner.nextLine(); 
 
                         Carro.cadastrarCarro(
                                 placaCarro, marcaCarro, modeloCarro, anoCarro, precoCarro,
@@ -77,7 +77,7 @@ public class LocadoraVeiculos {
                     case 3: // Editar Carro
                         System.out.print("ID do Carro a editar: ");
                         int idCarroEdit = scanner.nextInt();
-                        scanner.nextLine(); // limpar
+                        scanner.nextLine(); 
 
                         System.out.print("Nova Placa: ");
                         String novaPlacaCarro = scanner.nextLine();
@@ -153,7 +153,7 @@ public class LocadoraVeiculos {
                     case 7: // Editar Moto
                         System.out.print("ID da Moto a editar: ");
                         int idMotoEdit = scanner.nextInt();
-                        scanner.nextLine(); // Consumir a nova linha
+                        scanner.nextLine(); 
 
                         System.out.print("Nova Placa: ");
                         String novaPlacaMoto = scanner.nextLine();
@@ -202,7 +202,7 @@ public class LocadoraVeiculos {
                         }
 
                         System.out.print("ID do Veículo para alugar: ");
-                        int idVeiculoAluguel = Integer.parseInt(scanner.nextLine()); // Corrigido
+                        int idVeiculoAluguel = Integer.parseInt(scanner.nextLine()); 
 
                         Veiculo veiculoAluguel = Veiculo.buscarPorId(idVeiculoAluguel);
                         if (veiculoAluguel == null) {
@@ -285,7 +285,7 @@ public class LocadoraVeiculos {
                     case 15: // Editar Cliente
                         System.out.print("ID do Cliente a editar: ");
                         int idClienteEdit = scanner.nextInt();
-                        scanner.nextLine(); // Consumir a nova linha
+                        scanner.nextLine(); 
 
                         System.out.print("Novo Nome: ");
                         String novoNomeClienteEdit = scanner.nextLine();
@@ -337,10 +337,10 @@ public class LocadoraVeiculos {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Erro: Entrada inválida. Por favor, digite um número.");
-                scanner.nextLine(); // Limpar o buffer do scanner
+                scanner.nextLine(); 
             } catch (Exception e) {
                 System.out.println("Erro inesperado: " + e.getMessage());
-                scanner.nextLine(); // Limpar o buffer do scanner
+                scanner.nextLine();
             }
         } while (opcao != 0);
 

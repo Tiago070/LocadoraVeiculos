@@ -36,7 +36,6 @@ public class Aluguel {
 
     // Métodos de controle com banco de dados
     public static void inserirAluguel(Cliente cliente, Veiculo veiculo, LocalDate dataInicio, LocalDate dataFim) {
-    // Query corrigida com o nome exato da coluna (ex.: idCliente)
     String query = "INSERT INTO aluguel (idCliente, id_veiculo, data_inicio, data_fim) VALUES (?, ?, ?, ?)";
     
     try (Connection conn = Conexao.getConnection();

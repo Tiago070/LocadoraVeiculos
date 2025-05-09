@@ -137,6 +137,6 @@ public class Moto extends Veiculo {
 
     @Override
     public double calcularSeguro() {
-        return this.getPrecoDiario() * 0.10; // Exemplo para motos
+        return this.getPrecoDiario() * 0.10; 
     }
 }

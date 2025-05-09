@@ -136,6 +136,6 @@ public class Carro extends Veiculo {
 
     @Override
     public double calcularSeguro() {
-        return this.getPrecoDiario() * 0.15; // Exemplo
+        return this.getPrecoDiario() * 0.15;
     }
 }
