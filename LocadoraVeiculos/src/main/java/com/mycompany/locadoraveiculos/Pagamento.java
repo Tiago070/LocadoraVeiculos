@@ -77,7 +77,7 @@ public class Pagamento {
              PreparedStatement stmt = connection.prepareStatement(query)) {
 
             stmt.setInt(1, aluguel.getId());
-            stmt.setInt(2, cliente.getId());
+            stmt.setInt(2, cliente.getIdCliente());
             stmt.setInt(3, veiculo.getId());
             stmt.setDouble(4, valorPago);
             stmt.setString(5, formaPagamento);
@@ -100,8 +100,8 @@ public class Pagamento {
     public static void listarPagamentos() {
         String query = "SELECT p.id, c.nome AS cliente, v.modelo AS veiculo, p.valor_pago, p.forma_pagamento, p.data_pagamento " +
                             "FROM pagamentos p " +
-                            "JOIN clientes c ON p.id_cliente = c.id " +
-                            "JOIN veiculos v ON p.id_veiculo = v.id";
+                            "JOIN cliente c ON p.id_cliente = c.idCliente " +
+                            "JOIN veiculo v ON p.id_veiculo = v.id";
 
         try (Connection connection = Conexao.getConnection();
              Statement stmt = connection.createStatement();

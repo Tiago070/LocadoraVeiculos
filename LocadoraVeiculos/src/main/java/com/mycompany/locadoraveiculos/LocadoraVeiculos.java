@@ -195,19 +195,16 @@ public class LocadoraVeiculos {
                         System.out.print("Nome do Cliente: ");
                         String nomeClienteAluguel = scanner.nextLine();
 
-                        // Buscar o cliente pelo nome
                         Cliente clienteAluguel = Cliente.buscarClientePorNome(nomeClienteAluguel);
-
-                        if (clienteAluguel == null) {
-                            System.out.println("Cliente não encontrado!");
+                        if (clienteAluguel == null || clienteAluguel.getIdCliente() <= 0) {
+                            System.out.println("Cliente não encontrado ou ID inválido!");
                             break;
                         }
 
                         System.out.print("ID do Veículo para alugar: ");
-                        int idVeiculoAluguel = scanner.nextInt();
-                        scanner.nextLine(); // limpar
-                        Veiculo veiculoAluguel = Veiculo.buscarPorId(idVeiculoAluguel);
+                        int idVeiculoAluguel = Integer.parseInt(scanner.nextLine()); // Corrigido
 
+                        Veiculo veiculoAluguel = Veiculo.buscarPorId(idVeiculoAluguel);
                         if (veiculoAluguel == null) {
                             System.out.println("Veículo não encontrado!");
                             break;
@@ -215,8 +212,14 @@ public class LocadoraVeiculos {
 
                         System.out.print("Data de Início (AAAA-MM-DD): ");
                         LocalDate inicioAluguel = LocalDate.parse(scanner.nextLine());
+
                         System.out.print("Data de Fim (AAAA-MM-DD): ");
                         LocalDate fimAluguel = LocalDate.parse(scanner.nextLine());
+
+                        if (fimAluguel.isBefore(inicioAluguel)) {
+                            System.out.println("Data de fim deve ser após a data de início!");
+                            break;
+                        }
 
                         Aluguel.inserirAluguel(clienteAluguel, veiculoAluguel, inicioAluguel, fimAluguel);
                         break;

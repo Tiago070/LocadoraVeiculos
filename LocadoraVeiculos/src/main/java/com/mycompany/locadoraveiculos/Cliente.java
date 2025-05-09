@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class Cliente {
 
-    private int id;
+    private int idCliente;
     private String nome;
     private String cpf;
     private String telefone;
@@ -14,8 +14,8 @@ public class Cliente {
     public Cliente() {
     }
 
-    public Cliente(int id, String nome, String cpf, String telefone, String email) {
-        this.id = id;
+    public Cliente(int idCliente, String nome, String cpf, String telefone, String email) {
+        this.idCliente = idCliente;
         this.nome = nome;
         this.cpf = cpf;
         this.telefone = telefone;
@@ -23,8 +23,12 @@ public class Cliente {
     }
 
     // Getters e Setters
-    public int getId() {
-        return id;
+    public int getIdCliente() {
+        return idCliente;
+    }
+
+    public void setIdCliente(int idCliente) {
+        this.idCliente = idCliente;
     }
 
     public String getNome() {
@@ -41,10 +45,6 @@ public class Cliente {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public void setNome(String nome) {
@@ -64,9 +64,10 @@ public class Cliente {
     }
 
     // ================== MÉTODOS CRUD ===================
+
     // CADASTRAR CLIENTE
     public static void cadastrarCliente(String nome, String cpf, String telefone, String email) {
-        String query = "INSERT INTO clientes (nome, cpf, telefone, email) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO cliente (nome, cpf, telefone, email) VALUES (?, ?, ?, ?)";
 
         try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
@@ -89,7 +90,7 @@ public class Cliente {
 
     // LISTAR CLIENTES
     public static void listarClientes() {
-        String query = "SELECT * FROM clientes";
+        String query = "SELECT * FROM cliente";
 
         try (Connection connection = Conexao.getConnection(); Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
 
@@ -99,7 +100,7 @@ public class Cliente {
             System.out.println("----------------------------------------------------------");
 
             while (rs.next()) {
-                int id = rs.getInt("id");
+                int id = rs.getInt("idCliente");
                 String nome = rs.getString("nome");
                 String cpf = rs.getString("cpf");
                 String telefone = rs.getString("telefone");
@@ -115,8 +116,8 @@ public class Cliente {
     }
 
     // EDITAR CLIENTE
-    public static void editarCliente(int id, String nome, String cpf, String telefone, String email) {
-        String query = "UPDATE clientes SET nome = ?, cpf = ?, telefone = ?, email = ? WHERE id = ?";
+    public static void editarCliente(int idCliente, String nome, String cpf, String telefone, String email) {
+        String query = "UPDATE cliente SET nome = ?, cpf = ?, telefone = ?, email = ? WHERE idCliente = ?";
 
         try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
@@ -124,7 +125,7 @@ public class Cliente {
             stmt.setString(2, cpf);
             stmt.setString(3, telefone);
             stmt.setString(4, email);
-            stmt.setInt(5, id);
+            stmt.setInt(5, idCliente);
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
@@ -139,12 +140,12 @@ public class Cliente {
     }
 
     // DELETAR CLIENTE
-    public static void deletarCliente(int id) {
-        String query = "DELETE FROM clientes WHERE id = ?";
+    public static void deletarCliente(int idCliente) {
+        String query = "DELETE FROM cliente WHERE idCliente = ?";
 
         try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
-            stmt.setInt(1, id);
+            stmt.setInt(1, idCliente);
 
             int rows = stmt.executeUpdate();
             if (rows > 0) {
@@ -159,24 +160,24 @@ public class Cliente {
     }
 
     // BUSCAR CLIENTE POR ID
-    public static Cliente buscarClientePorId(int id) {
-        String query = "SELECT * FROM clientes WHERE id = ?";
+    public static Cliente buscarClientePorId(int idCliente) {
+        String query = "SELECT * FROM cliente WHERE idCliente = ?";
 
         try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
-            stmt.setInt(1, id);
+            stmt.setInt(1, idCliente);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 return new Cliente(
-                        rs.getInt("id"),
+                        rs.getInt("idCliente"),
                         rs.getString("nome"),
                         rs.getString("cpf"),
                         rs.getString("telefone"),
                         rs.getString("email")
                 );
             } else {
-                System.out.println("Cliente com ID " + id + " não encontrado.");
+                System.out.println("Cliente com ID " + idCliente + " não encontrado.");
             }
 
         } catch (SQLException e) {
@@ -185,9 +186,9 @@ public class Cliente {
         return null;
     }
 
-    // BUSCAR CLIENTE POR NOME (Adicionado para o menu principal)
+    // BUSCAR CLIENTE POR NOME
     public static Cliente buscarClientePorNome(String nome) {
-        String query = "SELECT * FROM clientes WHERE nome LIKE ?";
+        String query = "SELECT * FROM cliente WHERE nome LIKE ?";
 
         try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
@@ -196,7 +197,7 @@ public class Cliente {
 
             if (rs.next()) {
                 return new Cliente(
-                        rs.getInt("id"),
+                        rs.getInt("idCliente"),
                         rs.getString("nome"),
                         rs.getString("cpf"),
                         rs.getString("telefone"),

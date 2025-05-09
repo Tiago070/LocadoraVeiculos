@@ -36,17 +36,19 @@ public class Aluguel {
 
     // Métodos de controle com banco de dados
     public static void inserirAluguel(Cliente cliente, Veiculo veiculo, LocalDate dataInicio, LocalDate dataFim) {
-        String query = "INSERT INTO alugueis (id_cliente, id_veiculo, data_inicio, data_fim) VALUES (?, ?, ?, ?)";
-
-        try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
-
-            stmt.setInt(1, cliente.getId()); // ID do cliente
-            stmt.setInt(2, veiculo.getId()); // ID do veículo
-            stmt.setDate(3, Date.valueOf(dataInicio));
-            stmt.setDate(4, Date.valueOf(dataFim));
-
-            stmt.executeUpdate();
-            System.out.println("Aluguel inserido com sucesso!");
+    // Query corrigida com o nome exato da coluna (ex.: idCliente)
+    String query = "INSERT INTO aluguel (idCliente, id_veiculo, data_inicio, data_fim) VALUES (?, ?, ?, ?)";
+    
+    try (Connection conn = Conexao.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(query)) {
+        
+        stmt.setInt(1, cliente.getIdCliente());
+        stmt.setInt(2, veiculo.getId());
+        stmt.setDate(3, Date.valueOf(dataInicio));
+        stmt.setDate(4, Date.valueOf(dataFim));
+        
+        stmt.executeUpdate();
+        System.out.println("Aluguel cadastrado com sucesso!");
 
         } catch (SQLException e) {
             System.out.println("Erro ao inserir aluguel: " + e.getMessage());
@@ -54,11 +56,11 @@ public class Aluguel {
     }
 
     public static void editarAluguel(int id, Cliente cliente, Veiculo veiculo, LocalDate dataInicio, LocalDate dataFim) {
-        String query = "UPDATE alugueis SET id_cliente = ?, id_veiculo = ?, data_inicio = ?, data_fim = ? WHERE id = ?";
+        String query = "UPDATE aluguel SET idCliente = ?, id_veiculo = ?, data_inicio = ?, data_fim = ? WHERE id = ?";
 
         try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
-            stmt.setInt(1, cliente.getId()); // ID do cliente
+            stmt.setInt(1, cliente.getIdCliente()); // ID do cliente
             stmt.setInt(2, veiculo.getId()); // ID do veículo
             stmt.setDate(3, Date.valueOf(dataInicio));
             stmt.setDate(4, Date.valueOf(dataFim));
@@ -78,7 +80,7 @@ public class Aluguel {
     }
 
     public static void devolucaoAluguel(int id) {
-        String query = "UPDATE alugueis SET data_fim = ? WHERE id = ?";
+        String query = "UPDATE aluguel SET data_fim = ? WHERE id = ?";
 
         try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
@@ -100,9 +102,9 @@ public class Aluguel {
 
     public static void listarAlugueis() {
         String query = "SELECT a.id, a.data_inicio, a.data_fim, c.nome AS cliente, v.modelo AS veiculo "
-                + "FROM alugueis a "
-                + "JOIN clientes c ON a.id_cliente = c.id "
-                + "JOIN veiculos v ON a.id_veiculo = v.id";
+                + "FROM aluguel a "
+                + "JOIN cliente c ON a.idCliente = c.idCliente "
+                + "JOIN veiculo v ON a.id_veiculo = v.id";
 
         try (Connection connection = Conexao.getConnection(); Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
 
@@ -125,8 +127,8 @@ public class Aluguel {
 
     // Método auxiliar para calcular o total de aluguel com base no ID
     private static double calcularTotalAluguel(int id) {
-        String query = "SELECT a.data_inicio, a.data_fim, v.precoDiario FROM alugueis a "
-                + "JOIN veiculos v ON a.id_veiculo = v.id WHERE a.id = ?";
+        String query = "SELECT a.data_inicio, a.data_fim, v.precoDiario FROM aluguel a "
+                + "JOIN veiculo v ON a.id_veiculo = v.id WHERE a.id = ?";
         try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
 
             stmt.setInt(1, id);
@@ -159,30 +161,33 @@ public class Aluguel {
     }
 
     public static Aluguel buscarPorId(int id) {
-        String query = "SELECT a.id, a.id_cliente, a.id_veiculo, a.data_inicio, a.data_fim, "
+        String query = "SELECT a.id, a.idCliente, a.id_veiculo, a.data_inicio, a.data_fim, "
                 + "c.nome AS nome_cliente, c.cpf, c.telefone, c.email, "
                 + "v.placa, v.marca, v.modelo AS modelo_veiculo, v.ano, v.precoDiario, v.cor, v.quilometragem, "
                 + "CASE "
                 + "   WHEN EXISTS (SELECT 1 FROM carro WHERE id = v.id) THEN 'CARRO' "
                 + "   WHEN EXISTS (SELECT 1 FROM moto WHERE id = v.id) THEN 'MOTO' "
                 + "   ELSE NULL "
-                + // Se não for carro nem moto, retorna NULL para tipo_veiculo
-                "END AS tipo_veiculo "
-                + "FROM alugueis a "
-                + "JOIN clientes c ON a.id_cliente = c.id "
-                + "JOIN veiculos v ON a.id_veiculo = v.id "
+                + "END AS tipo_veiculo "
+                + "FROM aluguel a "
+                + "JOIN cliente c ON a.idCliente = c.idCliente " // Corrigido para "cliente" (singular)
+                + "JOIN veiculo v ON a.id_veiculo = v.id "
                 + "WHERE a.id = ?";
+
         try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(query)) {
+
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
                 Cliente cliente = new Cliente(
-                        rs.getInt("id_cliente"),
+                        rs.getInt("idCliente"),
                         rs.getString("nome_cliente"),
                         rs.getString("cpf"),
                         rs.getString("telefone"),
                         rs.getString("email")
                 );
+
                 int veiculoId = rs.getInt("id_veiculo");
                 String tipoVeiculo = rs.getString("tipo_veiculo");
                 Veiculo veiculo = null;
