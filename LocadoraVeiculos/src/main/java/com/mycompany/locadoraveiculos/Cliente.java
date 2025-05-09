@@ -88,7 +88,6 @@ public class Cliente {
     }
 
     // LISTAR CLIENTES
-    // LISTAR CLIENTES
     public static void listarClientes() {
         String query = "SELECT * FROM clientes";
 
@@ -96,15 +95,17 @@ public class Cliente {
 
             System.out.println("\nClientes cadastrados:");
             System.out.println("----------------------------------------------------------");
-            System.out.printf("| %-4s | %-20s | %-14s |\n", "ID", "Nome", "CPF");
+            System.out.printf("| %-4s | %-20s | %-14s | %-15s | %-30s |\n", "ID", "Nome", "CPF", "Telefone", "Email");
             System.out.println("----------------------------------------------------------");
 
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String nome = rs.getString("nome");
                 String cpf = rs.getString("cpf");
+                String telefone = rs.getString("telefone");
+                String email = rs.getString("email");
 
-                System.out.printf("| %-4d | %-20s | %-14s |\n", id, nome, cpf);
+                System.out.printf("| %-4d | %-20s | %-14s | %-15s | %-30s |\n", id, nome, cpf, telefone, email);
             }
             System.out.println("----------------------------------------------------------");
 
@@ -180,6 +181,33 @@ public class Cliente {
 
         } catch (SQLException e) {
             System.out.println("Erro ao buscar cliente: " + e.getMessage());
+        }
+        return null;
+    }
+
+    // BUSCAR CLIENTE POR NOME (Adicionado para o menu principal)
+    public static Cliente buscarClientePorNome(String nome) {
+        String query = "SELECT * FROM clientes WHERE nome LIKE ?";
+
+        try (Connection connection = Conexao.getConnection(); PreparedStatement stmt = connection.prepareStatement(query)) {
+
+            stmt.setString(1, "%" + nome + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new Cliente(
+                        rs.getInt("id"),
+                        rs.getString("nome"),
+                        rs.getString("cpf"),
+                        rs.getString("telefone"),
+                        rs.getString("email")
+                );
+            } else {
+                System.out.println("Cliente com nome contendo '" + nome + "' não encontrado.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar cliente por nome: " + e.getMessage());
         }
         return null;
     }

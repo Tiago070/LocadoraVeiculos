@@ -1,7 +1,12 @@
 package com.mycompany.locadoraveiculos;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDate;
+import java.sql.Date;
 
 public class Pagamento {
     private int id;
@@ -94,9 +99,9 @@ public class Pagamento {
     // Listar pagamentos
     public static void listarPagamentos() {
         String query = "SELECT p.id, c.nome AS cliente, v.modelo AS veiculo, p.valor_pago, p.forma_pagamento, p.data_pagamento " +
-                       "FROM pagamentos p " +
-                       "JOIN clientes c ON p.id_cliente = c.id " +
-                       "JOIN veiculos v ON p.id_veiculo = v.id";
+                            "FROM pagamentos p " +
+                            "JOIN clientes c ON p.id_cliente = c.id " +
+                            "JOIN veiculos v ON p.id_veiculo = v.id";
 
         try (Connection connection = Conexao.getConnection();
              Statement stmt = connection.createStatement();
@@ -114,8 +119,9 @@ public class Pagamento {
                 LocalDate data = rs.getDate("data_pagamento").toLocalDate();
 
                 System.out.printf("ID: %d | Cliente: %s | Veículo: %s | Valor: R$%.2f | Forma: %s | Data: %s\n",
-                                  id, cliente, veiculo, valor, forma, data);
+                                    id, cliente, veiculo, valor, forma, data);
             }
+            System.out.println("---------------------------------------------------------------");
 
         } catch (SQLException e) {
             System.out.println("Erro ao listar pagamentos: " + e.getMessage());

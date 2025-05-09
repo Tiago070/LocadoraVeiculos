@@ -94,57 +94,58 @@ public abstract class Veiculo {
         this.precoDiario = precoDiario;
     }
 
+    // Método para buscar veículo por ID (unificado para Carro e Moto)
     public static Veiculo buscarPorId(int id) {
-        String sql = "SELECT * FROM veiculo WHERE id = ?";
-
-        try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String tipo = rs.getString("tipo"); // "carro" ou "moto"
-
-                // Dados comuns
-                String placa = rs.getString("placa");
-                String marca = rs.getString("marca");
-                String modelo = rs.getString("modelo");
-                int ano = rs.getInt("ano");
-                int quilometragem = rs.getInt("quilometragem");
-                double precoDiario = rs.getDouble("preco_diario");
-                String cor = rs.getString("cor");
-
-                if (tipo.equalsIgnoreCase("carro")) {
-                    int numPortas = rs.getInt("num_portas");
-                    String tipoCombustivel = rs.getString("tipo_combustivel");
-                    boolean arCondicionado = rs.getBoolean("ar_condicionado");
-                    String cambio = rs.getString("cambio");
-
-                    return new Carro(
-                            id, placa, marca, modelo, ano,
-                            precoDiario, cor, quilometragem,
-                            numPortas, tipoCombustivel, arCondicionado, cambio
-                    );
-
-                } else if (tipo.equalsIgnoreCase("moto")) {
-                    int cilindradas = rs.getInt("cilindradas");
-                    boolean partidaEletrica = rs.getBoolean("partida_eletrica");
-                    String tipoMoto = rs.getString("tipo_moto");
-                    String tipoFreio = rs.getString("tipo_freio");
-
-                    return new Moto(
-                            id, placa, marca, modelo, ano,
-                            precoDiario, cor, quilometragem,
-                            cilindradas, partidaEletrica, tipoMoto, tipoFreio
-                    );
-                }
+        try (Connection conn = Conexao.getConnection()) {
+            // Tentar buscar como Carro
+            String sqlCarro = "SELECT v.*, c.portas, c.tipoCombustivel, c.arCondicionado, c.tipoCambio " +
+                              "FROM veiculo v JOIN carro c ON v.id = c.id WHERE v.id = ?";
+            PreparedStatement stmtCarro = conn.prepareStatement(sqlCarro);
+            stmtCarro.setInt(1, id);
+            ResultSet rsCarro = stmtCarro.executeQuery();
+            if (rsCarro.next()) {
+                return new Carro(
+                        rsCarro.getInt("id"),
+                        rsCarro.getString("placa"),
+                        rsCarro.getString("marca"),
+                        rsCarro.getString("modelo"),
+                        rsCarro.getInt("ano"),
+                        rsCarro.getDouble("precoDiario"),
+                        rsCarro.getString("cor"),
+                        rsCarro.getInt("quilometragem"),
+                        rsCarro.getInt("portas"),
+                        rsCarro.getString("tipoCombustivel"),
+                        rsCarro.getBoolean("arCondicionado"),
+                        rsCarro.getString("tipoCambio")
+                );
             }
 
+            // Tentar buscar como Moto
+            String sqlMoto = "SELECT v.*, m.cilindradas, m.partidaEletrica, m.tipoMoto, m.tipoFreio " +
+                            "FROM veiculo v JOIN moto m ON v.id = m.id WHERE v.id = ?";
+            PreparedStatement stmtMoto = conn.prepareStatement(sqlMoto);
+            stmtMoto.setInt(1, id);
+            ResultSet rsMoto = stmtMoto.executeQuery();
+            if (rsMoto.next()) {
+                return new Moto(
+                        rsMoto.getInt("id"),
+                        rsMoto.getString("placa"),
+                        rsMoto.getString("marca"),
+                        rsMoto.getString("modelo"),
+                        rsMoto.getInt("ano"),
+                        rsMoto.getDouble("precoDiario"),
+                        rsMoto.getString("cor"),
+                        rsMoto.getInt("quilometragem"),
+                        rsMoto.getInt("cilindradas"),
+                        rsMoto.getBoolean("partidaEletrica"),
+                        rsMoto.getString("tipoMoto"),
+                        rsMoto.getString("tipoFreio")
+                );
+            }
         } catch (SQLException e) {
             System.out.println("Erro ao buscar veículo por ID: " + e.getMessage());
         }
-
+        System.out.println("Veículo com ID " + id + " não encontrado.");
         return null;
-
     }
 }

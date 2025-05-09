@@ -25,8 +25,8 @@ public class LocadoraVeiculos {
             System.out.println("12. Devolver Aluguel");
             System.out.println("13. Cadastrar Cliente");  // Nova opção
             System.out.println("14. Listar Clientes");    // Nova opção
-            System.out.println("15. Editar Cliente");     // Nova opção
-            System.out.println("16. Apagar Cliente");     // Nova opção
+            System.out.println("15. Editar Cliente");      // Nova opção
+            System.out.println("16. Apagar Cliente");      // Nova opção
             System.out.println("17. Cadastrar Pagamento");
             System.out.println("18. Listar Pagamentos");
             System.out.println("0. Sair");
@@ -193,27 +193,32 @@ public class LocadoraVeiculos {
 
                     case 9: // Cadastrar Aluguel
                         System.out.print("Nome do Cliente: ");
-                        String nomeCliente = scanner.nextLine();
+                        String nomeClienteAluguel = scanner.nextLine();
 
-                        // Buscar o cliente pelo nome (ou outro identificador)
-                        Cliente cliente = Cliente.buscarClientePorNome(nomeCliente); // Implementar esse método na classe Cliente
+                        // Buscar o cliente pelo nome
+                        Cliente clienteAluguel = Cliente.buscarClientePorNome(nomeClienteAluguel);
 
-                        if (cliente == null) {
+                        if (clienteAluguel == null) {
                             System.out.println("Cliente não encontrado!");
                             break;
                         }
 
-                        System.out.print("ID do Veículo para alugar (Moto ou Carro): ");
-                        int idVeiculo = scanner.nextInt();
+                        System.out.print("ID do Veículo para alugar: ");
+                        int idVeiculoAluguel = scanner.nextInt();
                         scanner.nextLine(); // limpar
-                        Veiculo veiculo = Veiculo.buscarPorId(idVeiculo); 
+                        Veiculo veiculoAluguel = Veiculo.buscarPorId(idVeiculoAluguel);
+
+                        if (veiculoAluguel == null) {
+                            System.out.println("Veículo não encontrado!");
+                            break;
+                        }
 
                         System.out.print("Data de Início (AAAA-MM-DD): ");
-                        LocalDate inicio = LocalDate.parse(scanner.nextLine());
+                        LocalDate inicioAluguel = LocalDate.parse(scanner.nextLine());
                         System.out.print("Data de Fim (AAAA-MM-DD): ");
-                        LocalDate fim = LocalDate.parse(scanner.nextLine());
+                        LocalDate fimAluguel = LocalDate.parse(scanner.nextLine());
 
-                        Aluguel.inserirAluguel(cliente, veiculo, inicio, fim);
+                        Aluguel.inserirAluguel(clienteAluguel, veiculoAluguel, inicioAluguel, fimAluguel);
                         break;
 
                     case 10: // Listar Aluguéis
@@ -226,20 +231,28 @@ public class LocadoraVeiculos {
                         scanner.nextLine();
 
                         System.out.print("Novo nome do Cliente: ");
-                        String novoNomeCliente = scanner.nextLine();
-                        Cliente novoCliente = new Cliente(novoNomeCliente); // ou buscar
+                        String novoNomeClienteAluguel = scanner.nextLine();
+                        Cliente novoClienteAluguel = Cliente.buscarClientePorNome(novoNomeClienteAluguel);
+                        if (novoClienteAluguel == null) {
+                            System.out.println("Cliente não encontrado!");
+                            break;
+                        }
 
                         System.out.print("Novo ID do Veículo: ");
-                        int novoIdVeiculo = scanner.nextInt();
+                        int novoIdVeiculoAluguel = scanner.nextInt();
                         scanner.nextLine();
-                        Veiculo novoVeiculo = Veiculo.buscarPorId(novoIdVeiculo); // ou usar lista
+                        Veiculo novoVeiculoAluguel = Veiculo.buscarPorId(novoIdVeiculoAluguel);
+                        if (novoVeiculoAluguel == null) {
+                            System.out.println("Veículo não encontrado!");
+                            break;
+                        }
 
                         System.out.print("Nova Data de Início (AAAA-MM-DD): ");
-                        LocalDate novaDataInicio = LocalDate.parse(scanner.nextLine());
+                        LocalDate novaDataInicioAluguel = LocalDate.parse(scanner.nextLine());
                         System.out.print("Nova Data de Fim (AAAA-MM-DD): ");
-                        LocalDate novaDataFim = LocalDate.parse(scanner.nextLine());
+                        LocalDate novaDataFimAluguel = LocalDate.parse(scanner.nextLine());
 
-                        Aluguel.editarAluguel(idAluguelEdit, novoCliente, novoVeiculo, novaDataInicio, novaDataFim);
+                        Aluguel.editarAluguel(idAluguelEdit, novoClienteAluguel, novoVeiculoAluguel, novaDataInicioAluguel, novaDataFimAluguel);
                         break;
 
                     case 12: // Devolução
@@ -251,15 +264,15 @@ public class LocadoraVeiculos {
 
                     case 13: // Cadastrar Cliente
                         System.out.print("Nome: ");
-                        String nomeCliente = scanner.nextLine();
+                        String nomeClienteCad = scanner.nextLine();
                         System.out.print("CPF: ");
-                        String cpfCliente = scanner.nextLine();
+                        String cpfClienteCad = scanner.nextLine();
                         System.out.print("Telefone: ");
-                        String telefoneCliente = scanner.nextLine();
+                        String telefoneClienteCad = scanner.nextLine();
                         System.out.print("Email: ");
-                        String emailCliente = scanner.nextLine();
+                        String emailClienteCad = scanner.nextLine();
 
-                        Cliente.cadastrarCliente(nomeCliente, cpfCliente, telefoneCliente, emailCliente);
+                        Cliente.cadastrarCliente(nomeClienteCad, cpfClienteCad, telefoneClienteCad, emailClienteCad);
                         break;
 
                     case 14: // Listar Clientes
@@ -272,15 +285,15 @@ public class LocadoraVeiculos {
                         scanner.nextLine(); // Consumir a nova linha
 
                         System.out.print("Novo Nome: ");
-                        String novoNomeCliente = scanner.nextLine();
+                        String novoNomeClienteEdit = scanner.nextLine();
                         System.out.print("Novo CPF: ");
-                        String novoCpfCliente = scanner.nextLine();
+                        String novoCpfClienteEdit = scanner.nextLine();
                         System.out.print("Novo Telefone: ");
-                        String novoTelefoneCliente = scanner.nextLine();
+                        String novoTelefoneClienteEdit = scanner.nextLine();
                         System.out.print("Novo Email: ");
-                        String novoEmailCliente = scanner.nextLine();
+                        String novoEmailClienteEdit = scanner.nextLine();
 
-                        Cliente.editarCliente(idClienteEdit, novoNomeCliente, novoCpfCliente, novoTelefoneCliente, novoEmailCliente);
+                        Cliente.editarCliente(idClienteEdit, novoNomeClienteEdit, novoCpfClienteEdit, novoTelefoneClienteEdit, novoEmailClienteEdit);
                         break;
 
                     case 16: // Apagar Cliente
@@ -289,21 +302,25 @@ public class LocadoraVeiculos {
                         Cliente.deletarCliente(idClienteDel);
                         break;
 
-                    case 17:
-                        System.out.print("ID do Aluguel: ");
+                    case 17: // Cadastrar Pagamento
+                        System.out.print("ID do Aluguel para pagamento: ");
                         int idAluguelPg = scanner.nextInt();
                         scanner.nextLine();
                         Aluguel aluguelPg = Aluguel.buscarPorId(idAluguelPg);
+
                         if (aluguelPg == null) {
                             System.out.println("Aluguel não encontrado!");
                             break;
                         }
                         System.out.print("Forma de Pagamento (Cartão, Pix, Dinheiro): ");
                         String formaPg = scanner.nextLine();
-                        Pagamento.cadastrarPagamento(aluguelPg, formaPg);
+
+                        // Cria uma nova instância de Pagamento utilizando o objeto Aluguel retornado
+                        Pagamento pagamento = new Pagamento(0, aluguelPg, formaPg, LocalDate.now());
+                        pagamento.inserirPagamento();
                         break;
 
-                    case 18:
+                    case 18: // Listar Pagamentos
                         Pagamento.listarPagamentos();
                         break;
 
@@ -315,9 +332,12 @@ public class LocadoraVeiculos {
                         System.out.println("Opção inválida! Tente novamente.");
                         break;
                 }
+            } catch (InputMismatchException e) {
+                System.out.println("Erro: Entrada inválida. Por favor, digite um número.");
+                scanner.nextLine(); // Limpar o buffer do scanner
             } catch (Exception e) {
-                System.out.println("Erro: " + e.getMessage());
-                scanner.nextLine(); // Limpar o buffer
+                System.out.println("Erro inesperado: " + e.getMessage());
+                scanner.nextLine(); // Limpar o buffer do scanner
             }
         } while (opcao != 0);
 
