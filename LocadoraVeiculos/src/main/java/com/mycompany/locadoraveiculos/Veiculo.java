@@ -16,9 +16,10 @@ public abstract class Veiculo {
     private int quilometragem;
     private double precoDiario;
 
-    public Veiculo(int id, String modelo, String placa, int ano, int quilometragem, double precoDiario) {
+    public Veiculo(int id, String modelo, String placa,String marca, int ano, int quilometragem, double precoDiario) {
         this.id = id;
         this.modelo = modelo;
+        this.marca = marca;
         this.placa = placa;
         this.ano = ano;
         this.quilometragem = quilometragem;

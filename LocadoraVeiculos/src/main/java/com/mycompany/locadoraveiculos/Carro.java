@@ -12,10 +12,11 @@ public class Carro extends Veiculo {
     public Carro(int id, String placa, String marca, String modelo, int anoFabricacao,
                  double precoDiario, String cor, int quilometragem, int numPortas,
                  String tipoCombustivel, boolean arCondicionado, String cambio) {
-        super(id, modelo, placa, anoFabricacao,quilometragem, precoDiario);
+        super(id, modelo, placa,marca, anoFabricacao,quilometragem, precoDiario);
         this.setMarca(marca);
         this.setCor(cor);
         this.setQuilometragem(quilometragem);
+        this.setPrecoDiario(precoDiario);
         this.numPortas = numPortas;
         this.tipoCombustivel = tipoCombustivel;
         this.arCondicionado = arCondicionado;

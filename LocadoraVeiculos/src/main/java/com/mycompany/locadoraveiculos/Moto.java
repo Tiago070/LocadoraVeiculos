@@ -9,12 +9,13 @@ public class Moto extends Veiculo {
     private String tipoFreio;
 
     public Moto(int id, String placa, String marca, String modelo, int anoFabricacao,
-                double valorDiaria, String cor, int quilometragem, int cilindradas,
+                double precoDiario, String cor, int quilometragem, int cilindradas,
                 boolean partidaEletrica, String tipoMoto, String tipoFreio) {
-        super(id, modelo, placa, anoFabricacao,quilometragem, valorDiaria);
+        super(id, modelo, placa,marca, anoFabricacao,quilometragem, precoDiario);
         this.setMarca(marca);
         this.setCor(cor);
         this.setQuilometragem(quilometragem);
+        this.setPrecoDiario(precoDiario);
         this.cilindradas = cilindradas;
         this.tipoMoto = tipoMoto;
         this.partidaEletrica = partidaEletrica;
