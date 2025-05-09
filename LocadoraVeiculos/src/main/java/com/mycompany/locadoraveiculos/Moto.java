@@ -11,7 +11,7 @@ public class Moto extends Veiculo {
     public Moto(int id, String placa, String marca, String modelo, int anoFabricacao,
                 double valorDiaria, String cor, int quilometragem, int cilindradas,
                 boolean partidaEletrica, String tipoMoto, String tipoFreio) {
-        super(id, modelo, placa, anoFabricacao, valorDiaria);
+        super(id, modelo, placa, anoFabricacao,quilometragem, valorDiaria);
         this.setMarca(marca);
         this.setCor(cor);
         this.setQuilometragem(quilometragem);
