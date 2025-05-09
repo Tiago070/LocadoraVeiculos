@@ -23,10 +23,10 @@ public class LocadoraVeiculos {
             System.out.println("10. Listar Aluguéis");
             System.out.println("11. Editar Aluguel");
             System.out.println("12. Devolver Aluguel");
-            System.out.println("13. Cadastrar Cliente");  // Nova opção
-            System.out.println("14. Listar Clientes");    // Nova opção
-            System.out.println("15. Editar Cliente");      // Nova opção
-            System.out.println("16. Apagar Cliente");      // Nova opção
+            System.out.println("13. Cadastrar Cliente");  
+            System.out.println("14. Listar Clientes");    
+            System.out.println("15. Editar Cliente");      
+            System.out.println("16. Apagar Cliente");      
             System.out.println("17. Cadastrar Pagamento");
             System.out.println("18. Listar Pagamentos");
             System.out.println("0. Sair");
