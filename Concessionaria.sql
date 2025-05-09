@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `concessionaria` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `concessionaria`;
--- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.40, for Win64 (x86_64)
 --
--- Host: localhost    Database: concessionaria
+-- Host: 127.0.0.1    Database: concessionaria
 -- ------------------------------------------------------
--- Server version	8.0.39
+-- Server version	8.0.33
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -51,12 +51,13 @@ DROP TABLE IF EXISTS `carro`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `carro` (
-  `idcarro` int NOT NULL,
-  `numPortas` int DEFAULT NULL,
-  `tipoCombustivel` varchar(20) DEFAULT NULL,
-  `arCondicionado` tinyint(1) DEFAULT NULL,
-  `cambio` varchar(20) DEFAULT NULL,
-  PRIMARY KEY (`idcarro`)
+  `id` int NOT NULL,
+  `portas` int NOT NULL,
+  `tipoCombustivel` varchar(30) NOT NULL,
+  `tipoCambio` varchar(30) NOT NULL,
+  `arCondicionado` tinyint(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `carro_ibfk_1` FOREIGN KEY (`id`) REFERENCES `veiculo` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -103,12 +104,13 @@ DROP TABLE IF EXISTS `moto`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `moto` (
-  `idmoto` int NOT NULL,
-  `cilindradas` tinyint DEFAULT NULL,
-  `tipoFreio` varchar(60) DEFAULT NULL,
-  `tipoMoto` varchar(60) DEFAULT NULL,
-  `partidaEletrica` tinyint DEFAULT NULL,
-  PRIMARY KEY (`idmoto`)
+  `id` int NOT NULL,
+  `cilindradas` int NOT NULL,
+  `partidaEletrica` tinyint(1) NOT NULL,
+  `tipoMoto` varchar(30) NOT NULL,
+  `tipoFreio` varchar(30) NOT NULL,
+  PRIMARY KEY (`id`),
+  CONSTRAINT `moto_ibfk_1` FOREIGN KEY (`id`) REFERENCES `veiculo` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -154,13 +156,17 @@ DROP TABLE IF EXISTS `veiculo`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `veiculo` (
-  `idVeiculo` int NOT NULL,
-  `modelo` varchar(45) DEFAULT NULL,
-  `placa` int DEFAULT NULL,
-  `ano` date DEFAULT NULL,
-  `preçoDiario` double DEFAULT NULL,
-  PRIMARY KEY (`idVeiculo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `modelo` varchar(100) NOT NULL,
+  `placa` varchar(20) NOT NULL,
+  `marca` varchar(50) NOT NULL,
+  `cor` varchar(30) DEFAULT NULL,
+  `ano` int NOT NULL,
+  `quilometragem` int DEFAULT NULL,
+  `precoDiario` double DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `placa` (`placa`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -181,4 +187,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-07 14:03:20
+-- Dump completed on 2025-05-09  2:37:35
