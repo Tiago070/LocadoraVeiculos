@@ -206,7 +206,7 @@ public class LocadoraVeiculos {
                         System.out.print("ID do Veículo para alugar (Moto ou Carro): ");
                         int idVeiculo = scanner.nextInt();
                         scanner.nextLine(); // limpar
-                        Veiculo veiculo = Veiculo.buscarPorId(idVeiculo); // Supondo que exista este método
+                        Veiculo veiculo = Veiculo.buscarPorId(idVeiculo); 
 
                         System.out.print("Data de Início (AAAA-MM-DD): ");
                         LocalDate inicio = LocalDate.parse(scanner.nextLine());
