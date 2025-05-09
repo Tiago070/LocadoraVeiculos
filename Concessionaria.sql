@@ -25,13 +25,17 @@ DROP TABLE IF EXISTS `aluguel`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `aluguel` (
-  `idAluguel` int NOT NULL,
-  `Cliente` varchar(255) DEFAULT NULL,
-  `Veiculo` varchar(255) DEFAULT NULL,
-  `DataInicio` date DEFAULT NULL,
-  `DataFim` date DEFAULT NULL,
-  PRIMARY KEY (`idAluguel`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idCliente` int NOT NULL,
+  `id_veiculo` int NOT NULL,
+  `data_inicio` date NOT NULL,
+  `data_fim` date DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_veiculo` (`id_veiculo`),
+  KEY `aluguel_ibfk_1` (`idCliente`),
+  CONSTRAINT `aluguel_ibfk_1` FOREIGN KEY (`idCliente`) REFERENCES `cliente` (`idCliente`),
+  CONSTRAINT `aluguel_ibfk_2` FOREIGN KEY (`id_veiculo`) REFERENCES `veiculo` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,6 +44,7 @@ CREATE TABLE `aluguel` (
 
 LOCK TABLES `aluguel` WRITE;
 /*!40000 ALTER TABLE `aluguel` DISABLE KEYS */;
+INSERT INTO `aluguel` VALUES (1,3,4,'2025-12-12','2026-01-01'),(2,2,3,'2025-10-10','2025-05-09');
 /*!40000 ALTER TABLE `aluguel` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -67,6 +72,7 @@ CREATE TABLE `carro` (
 
 LOCK TABLES `carro` WRITE;
 /*!40000 ALTER TABLE `carro` DISABLE KEYS */;
+INSERT INTO `carro` VALUES (5,4,'Manuel','',1);
 /*!40000 ALTER TABLE `carro` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -78,13 +84,13 @@ DROP TABLE IF EXISTS `cliente`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `cliente` (
-  `idCliente` int NOT NULL,
+  `idCliente` int NOT NULL AUTO_INCREMENT,
   `Nome` varchar(45) NOT NULL,
   `Cpf` varchar(45) NOT NULL,
   `Telefone` varchar(45) DEFAULT NULL,
   `Email` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`idCliente`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -93,6 +99,7 @@ CREATE TABLE `cliente` (
 
 LOCK TABLES `cliente` WRITE;
 /*!40000 ALTER TABLE `cliente` DISABLE KEYS */;
+INSERT INTO `cliente` VALUES (2,'kaiky','2121212','51511','sadas@'),(3,'Leandro','5500','2220','leandro@');
 /*!40000 ALTER TABLE `cliente` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,6 +127,7 @@ CREATE TABLE `moto` (
 
 LOCK TABLES `moto` WRITE;
 /*!40000 ALTER TABLE `moto` DISABLE KEYS */;
+INSERT INTO `moto` VALUES (4,400,1,'motoneta','disco');
 /*!40000 ALTER TABLE `moto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,12 +139,21 @@ DROP TABLE IF EXISTS `pagamentos`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `pagamentos` (
-  `idPagamentos` int NOT NULL,
-  `aluguel` varchar(45) DEFAULT NULL,
-  `formaPagamento` varchar(45) DEFAULT NULL,
-  `valor` double DEFAULT NULL,
-  PRIMARY KEY (`idPagamentos`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_aluguel` int NOT NULL,
+  `id_cliente` int NOT NULL,
+  `id_veiculo` int NOT NULL,
+  `valor_pago` decimal(10,2) NOT NULL,
+  `forma_pagamento` varchar(50) NOT NULL,
+  `data_pagamento` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_aluguel` (`id_aluguel`),
+  KEY `id_cliente` (`id_cliente`),
+  KEY `id_veiculo` (`id_veiculo`),
+  CONSTRAINT `pagamentos_ibfk_1` FOREIGN KEY (`id_aluguel`) REFERENCES `aluguel` (`id`),
+  CONSTRAINT `pagamentos_ibfk_2` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`idCliente`),
+  CONSTRAINT `pagamentos_ibfk_3` FOREIGN KEY (`id_veiculo`) REFERENCES `veiculo` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,6 +162,7 @@ CREATE TABLE `pagamentos` (
 
 LOCK TABLES `pagamentos` WRITE;
 /*!40000 ALTER TABLE `pagamentos` DISABLE KEYS */;
+INSERT INTO `pagamentos` VALUES (1,2,2,3,-7700.00,'pix','2025-05-09');
 /*!40000 ALTER TABLE `pagamentos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,7 +184,7 @@ CREATE TABLE `veiculo` (
   `precoDiario` double DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `placa` (`placa`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -175,6 +193,7 @@ CREATE TABLE `veiculo` (
 
 LOCK TABLES `veiculo` WRITE;
 /*!40000 ALTER TABLE `veiculo` DISABLE KEYS */;
+INSERT INTO `veiculo` VALUES (3,'Cavalo','test12','Nseimesmo','marrom',200,999,10),(4,'biz','jkali-as','hyunday','branca',2025,82,30),(5,'corola','PIMBAS','naosei','branco',2022,0,999);
 /*!40000 ALTER TABLE `veiculo` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -187,4 +206,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-09  2:37:35
+-- Dump completed on 2025-05-09 14:04:59
