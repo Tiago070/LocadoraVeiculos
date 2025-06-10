@@ -21,7 +21,7 @@ public class TelaCliente extends JFrame {
 
         this.persistenciaCliente = new PCliente();
 
-        setTitle("Cadastro de Clientes (Arquitetura em Camadas)");
+        setTitle("Cadastro de Clientes");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
