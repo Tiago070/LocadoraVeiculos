@@ -1,4 +1,3 @@
-// Pacote da sua aplicação
 package com.mycompany.locadoraveiculos;
 
 import javax.swing.*;
