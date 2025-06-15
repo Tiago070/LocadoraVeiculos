@@ -1,3 +1,4 @@
+// Pacote da sua aplicação
 package com.mycompany.locadoraveiculos;
 
 import javax.swing.*;
@@ -39,5 +40,5 @@ public class TelaInicial extends JFrame {
         btnAlugueis.addActionListener(e -> new TelaAluguel().setVisible(true));
         // AÇÃO PARA O NOVO BOTÃO
         btnPagamentos.addActionListener(e -> new TelaPagamento().setVisible(true));
-    }
+    }
 }
