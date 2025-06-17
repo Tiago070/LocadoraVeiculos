@@ -1,11 +1,8 @@
-// Pacote da sua aplicação
 package com.mycompany.locadoraveiculos;
 
 import java.time.LocalDate;
 
-/**
- * Classe de ENTIDADE para Pagamento.
- */
+
 public class Pagamento {
 
     private int id;

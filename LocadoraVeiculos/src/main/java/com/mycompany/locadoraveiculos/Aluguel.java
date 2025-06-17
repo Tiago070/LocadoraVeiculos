@@ -4,10 +4,7 @@ package com.mycompany.locadoraveiculos;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-/**
- * Classe de ENTIDADE. Representa um aluguel, conectando um Cliente e um
- * Veiculo.
- */
+
 public class Aluguel {
 
     private int id;
@@ -33,7 +30,6 @@ public class Aluguel {
         if (dataInicio == null || dataFim == null || veiculo == null) {
             return 0.0;
         }
-        // Adiciona 1 para incluir o dia de início na contagem
         long dias = ChronoUnit.DAYS.between(dataInicio, dataFim) + 1;
         return dias * veiculo.getPrecoDiario();
     }

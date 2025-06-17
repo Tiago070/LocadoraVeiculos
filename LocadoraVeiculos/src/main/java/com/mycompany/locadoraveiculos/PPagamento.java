@@ -1,13 +1,10 @@
-// Pacote da sua aplicação
 package com.mycompany.locadoraveiculos;
 
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-/**
- * Classe de PERSISTÊNCIA para Pagamento.
- */
+
 public class PPagamento {
 
     public String incluirPagamento(Pagamento pagamento) {
@@ -15,7 +12,7 @@ public class PPagamento {
 
         try (Connection conn = Conexao.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            Aluguel aluguel = pagamento.getAluguel(); // Pega o objeto aluguel para facilitar
+            Aluguel aluguel = pagamento.getAluguel(); 
 
             stmt.setInt(1, aluguel.getId());
             stmt.setInt(2, aluguel.getCliente().getIdCliente());
@@ -29,7 +26,6 @@ public class PPagamento {
             return "Pagamento registrado com sucesso!";
 
         } catch (SQLException e) {
-            // Adiciona um print do erro para ajudar a depurar no futuro
             e.printStackTrace();
             return "Erro ao registrar pagamento: " + e.getMessage();
         }

@@ -1,9 +1,7 @@
 
 package com.mycompany.locadoraveiculos;
 
-/**
- * Classe de ENTIDADE. Representa os dados de uma Moto, herdando de Veiculo.
- */
+
 public class Moto extends Veiculo {
 
     private int cilindradas;
@@ -69,7 +67,6 @@ public class Moto extends Veiculo {
     }
     @Override
     public String toString() {
-        // Retorna uma combinação do modelo e da placa para fácil identificação
         return this.getModelo() + " [" + this.getPlaca() + "]";
     }
 }

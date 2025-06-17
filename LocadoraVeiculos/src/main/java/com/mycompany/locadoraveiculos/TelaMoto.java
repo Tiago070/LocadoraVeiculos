@@ -1,4 +1,3 @@
-// Pacote da sua aplicação
 package com.mycompany.locadoraveiculos;
 
 import javax.swing.*;
@@ -11,7 +10,6 @@ public class TelaMoto extends JFrame {
     private JTextField txtPlaca, txtMarca, txtModelo, txtAno, txtPreco, txtCor, txtKm, txtCilindradas;
     private JComboBox<String> comboTipoMoto, comboTipoFreio;
     private JCheckBox checkPartidaEletrica;
-    // NOVO: Botão Limpar
     private JButton btnSalvar, btnEditar, btnExcluir, btnLimpar;
     
     private JTable tabelaMotos;

@@ -99,7 +99,6 @@ public class TelaCliente extends JFrame {
 
     private void atualizarTabela() {
         modeloTabela.setRowCount(0);
-        // Pede a lista de clientes para a camada de persistência
         ArrayList<Cliente> clientes = persistenciaCliente.consultarClientes();
         for (Cliente cliente : clientes) {
             modeloTabela.addRow(new Object[]{
@@ -119,7 +118,6 @@ public class TelaCliente extends JFrame {
         novoCliente.setTelefone(txtTelefone.getText());
         novoCliente.setEmail(txtEmail.getText());
 
-        // Envia o objeto para a camada de persistência e recebe a resposta
         String resultado = persistenciaCliente.incluirCliente(novoCliente);
 
         JOptionPane.showMessageDialog(this, resultado, "Inclusão", JOptionPane.INFORMATION_MESSAGE);

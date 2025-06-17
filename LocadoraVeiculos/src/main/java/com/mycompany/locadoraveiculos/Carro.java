@@ -18,11 +18,9 @@ public class Carro extends Veiculo {
             double precoDiario, String cor, int quilometragem, int numPortas,
             String tipoCombustivel, boolean arCondicionado, String cambio) {
 
-        // Chama o construtor da classe pai (Veiculo) para os atributos comuns
         super(id, modelo, placa, marca, anoFabricacao, quilometragem, precoDiario);
 
-        // Define os atributos específicos de Carro
-        this.setCor(cor); // O campo cor está em Veiculo, mas é bom garantir
+        this.setCor(cor); 
         this.numPortas = numPortas;
         this.tipoCombustivel = tipoCombustivel;
         this.arCondicionado = arCondicionado;
@@ -69,7 +67,6 @@ public class Carro extends Veiculo {
     
     @Override
     public String toString() {
-        // Retorna uma combinação do modelo e da placa para fácil identificação
         return this.getModelo() + " [" + this.getPlaca() + "]";
     }
 }

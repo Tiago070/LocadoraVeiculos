@@ -93,14 +93,12 @@ public class TelaCarro extends JFrame {
         atualizarTabela();
     }
 
-    // ATUALIZADO: Contém todas as ações de botões e da tabela
     private void adicionarListeners() {
         btnSalvar.addActionListener(e -> salvarCarro());
         btnEditar.addActionListener(e -> editarCarro());
         btnExcluir.addActionListener(e -> excluirCarro());
         btnLimpar.addActionListener(e -> limparCampos());
 
-        // NOVO: Listener para preencher o formulário ao selecionar uma linha na tabela
         tabelaCarros.getSelectionModel().addListSelectionListener(event -> {
             if (!event.getValueIsAdjusting() && tabelaCarros.getSelectedRow() != -1) {
                 preencherFormularioPelaTabela();
@@ -125,7 +123,6 @@ public class TelaCarro extends JFrame {
         comboCambio.setSelectedItem(modeloTabela.getValueAt(linha, 11).toString());
     }
 
-    // NOVO: Método para limpar os campos do formulário
     private void limparCampos() {
         idSelecionado = null;
         txtPlaca.setText("");
@@ -186,7 +183,6 @@ public class TelaCarro extends JFrame {
         }
     }
 
-    // NOVO: Método para editar o carro
     private void editarCarro() {
         if (idSelecionado == null) {
             JOptionPane.showMessageDialog(this, "Selecione um carro na tabela para editar.");

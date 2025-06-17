@@ -1,9 +1,6 @@
 package com.mycompany.locadoraveiculos;
 
-/**
- * Classe de ENTIDADE (Abstrata). Representa os dados comuns a todos os
- * veículos.
- */
+
 public abstract class Veiculo {
 
     private int id;
@@ -15,11 +12,9 @@ public abstract class Veiculo {
     private int quilometragem;
     private double precoDiario;
 
-    // Construtor padrão
     public Veiculo() {
     }
 
-    // Construtor completo
     public Veiculo(int id, String modelo, String placa, String marca, int ano, int quilometragem, double precoDiario) {
         this.id = id;
         this.modelo = modelo;
@@ -30,12 +25,10 @@ public abstract class Veiculo {
         this.precoDiario = precoDiario;
     }
 
-    // Método abstrato
     public abstract double calcularSeguro();
     
      @Override
     public String toString() {
-        // Retorna uma combinação do modelo e da placa para fácil identificação
         return this.getModelo() + " [" + this.getPlaca() + "]";
     }
 

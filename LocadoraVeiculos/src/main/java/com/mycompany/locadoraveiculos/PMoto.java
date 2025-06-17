@@ -1,13 +1,9 @@
-// Pacote da sua aplicação
 package com.mycompany.locadoraveiculos;
 
 import java.sql.*;
 import java.util.ArrayList;
 
-/**
- * Classe de PERSISTÊNCIA para Moto. Lida com todas as operações de banco de
- * dados para Motos.
- */
+
 public class PMoto {
 
     public String incluirMoto(Moto moto) {
@@ -76,7 +72,6 @@ public class PMoto {
             conn = Conexao.getConnection();
             conn.setAutoCommit(false); // Inicia a transação
 
-            // 1. Atualizar a tabela 'veiculo'
             String sqlVeiculo = "UPDATE veiculo SET placa = ?, marca = ?, modelo = ?, ano = ?, precoDiario = ?, "
                     + "cor = ?, quilometragem = ? WHERE id = ?";
             try (PreparedStatement psVeiculo = conn.prepareStatement(sqlVeiculo)) {
@@ -91,7 +86,6 @@ public class PMoto {
                 psVeiculo.executeUpdate();
             }
 
-            // 2. Atualizar a tabela 'moto'
             String sqlMoto = "UPDATE moto SET cilindradas = ?, partidaEletrica = ?, tipoMoto = ?, tipoFreio = ? "
                     + "WHERE id = ?";
             try (PreparedStatement psMoto = conn.prepareStatement(sqlMoto)) {
@@ -103,7 +97,7 @@ public class PMoto {
                 psMoto.executeUpdate();
             }
 
-            conn.commit(); // Efetiva a transação
+            conn.commit();
             return "Moto alterada com sucesso!";
 
         } catch (SQLException e) {
@@ -131,14 +125,12 @@ public class PMoto {
             conn = Conexao.getConnection();
             conn.setAutoCommit(false);
 
-            // 1. Deletar da tabela filha 'moto'
             String sqlMoto = "DELETE FROM moto WHERE id = ?";
             try (PreparedStatement psMoto = conn.prepareStatement(sqlMoto)) {
                 psMoto.setInt(1, idMoto);
                 psMoto.executeUpdate();
             }
 
-            // 2. Deletar da tabela pai 'veiculo'
             String sqlVeiculo = "DELETE FROM veiculo WHERE id = ?";
             try (PreparedStatement psVeiculo = conn.prepareStatement(sqlVeiculo)) {
                 psVeiculo.setInt(1, idMoto);

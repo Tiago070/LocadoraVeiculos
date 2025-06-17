@@ -8,16 +8,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-/**
- * Classe de PERSISTÊNCIA. Responsável por todas as operações de banco de dados
- * para a entidade Cliente.
- */
+
 public class PCliente {
 
     // INCLUIR Cliente
     public String incluirCliente(Cliente cliente) {
         String resultado;
-        // Usa a sua classe de conexão, que seria o equivalente a `Banco.java`
         try (Connection conn = Conexao.getConnection()) {
             String sql = "INSERT INTO cliente (nome, cpf, telefone, email) VALUES (?, ?, ?, ?)";
             try (PreparedStatement pstm = conn.prepareStatement(sql)) {

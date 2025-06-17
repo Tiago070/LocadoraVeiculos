@@ -107,7 +107,7 @@ public class PAluguel {
 
     public ArrayList<Aluguel> consultarAlugueisParaPagamento() {
         ArrayList<Aluguel> lista = new ArrayList<>();
-        // A subquery `NOT IN (SELECT id_aluguel FROM pagamentos)` filtra os já pagos
+        
         String sql = "SELECT a.id as aluguel_id, a.data_inicio, a.data_fim, c.*, v.* "
                 + "FROM aluguel a "
                 + "JOIN cliente c ON a.idCliente = c.idCliente "
@@ -121,7 +121,7 @@ public class PAluguel {
                 cliente.setIdCliente(rs.getInt("idCliente"));
                 cliente.setNome(rs.getString("nome"));
 
-                Veiculo veiculo = new Carro(); // Apenas para instanciar, poderia ser moto
+                Veiculo veiculo = new Carro(); 
                 veiculo.setId(rs.getInt("id"));
                 veiculo.setModelo(rs.getString("modelo"));
                 veiculo.setPlaca(rs.getString("placa"));

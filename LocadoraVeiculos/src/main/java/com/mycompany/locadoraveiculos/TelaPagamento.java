@@ -1,4 +1,3 @@
-// Pacote da sua aplicação
 package com.mycompany.locadoraveiculos;
 
 import javax.swing.*;
@@ -8,9 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-/**
- * Classe de TELA (VIEW) para Pagamento.
- */
+
 public class TelaPagamento extends JFrame {
 
     private JComboBox<Aluguel> comboAlugueis;
@@ -33,7 +30,6 @@ public class TelaPagamento extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // --- PAINEL DO FORMULÁRIO ---
         JPanel painelForm = new JPanel(new GridLayout(0, 2, 10, 10));
         painelForm.setBorder(BorderFactory.createTitledBorder("Registrar Pagamento de Aluguel Finalizado"));
 
@@ -54,7 +50,6 @@ public class TelaPagamento extends JFrame {
         painelForm.add(new JLabel()); // Espaçador
         painelForm.add(btnConfirmarPagamento);
 
-        // --- PAINEL DA TABELA ---
         JPanel painelTabela = new JPanel(new BorderLayout(10, 10));
         painelTabela.setBorder(BorderFactory.createTitledBorder("Histórico de Pagamentos"));
 
@@ -63,7 +58,6 @@ public class TelaPagamento extends JFrame {
         tabelaPagamentos = new JTable(modeloTabela);
         painelTabela.add(new JScrollPane(tabelaPagamentos), BorderLayout.CENTER);
 
-        // Adiciona os painéis à janela
         add(painelForm, BorderLayout.NORTH);
         add(painelTabela, BorderLayout.CENTER);
 
@@ -73,7 +67,6 @@ public class TelaPagamento extends JFrame {
     }
 
     private void adicionarListeners() {
-        // Atualiza o valor a pagar quando um aluguel é selecionado
         comboAlugueis.addItemListener(e -> {
             if (e.getStateChange() == java.awt.event.ItemEvent.SELECTED) {
                 Aluguel aluguelSelecionado = (Aluguel) comboAlugueis.getSelectedItem();
@@ -91,7 +84,7 @@ public class TelaPagamento extends JFrame {
     private void carregarAlugueisPendentes() {
         comboAlugueis.removeAllItems();
         ArrayList<Aluguel> alugueis = persistenciaAluguel.consultarAlugueisParaPagamento();
-        comboAlugueis.addItem(null); // Opção vazia
+        comboAlugueis.addItem(null); 
         for (Aluguel a : alugueis) {
             comboAlugueis.addItem(a);
         }
@@ -103,10 +96,8 @@ public class TelaPagamento extends JFrame {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         for (Object[] p : pagamentos) {
-            // Converte a data para o formato correto antes de adicionar
             LocalDate data = (LocalDate) p[5];
             p[5] = data.format(formatter);
-            // Formata o valor
             p[3] = String.format("%.2f", p[3]);
             modeloTabela.addRow(p);
         }
@@ -126,7 +117,6 @@ public class TelaPagamento extends JFrame {
         String resultado = persistenciaPagamento.incluirPagamento(novoPagamento);
         JOptionPane.showMessageDialog(this, resultado);
 
-        // Atualiza a tela
         carregarAlugueisPendentes();
         atualizarHistorico();
         lblValorAPagar.setText("0.00");
